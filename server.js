@@ -73,8 +73,14 @@ async function connectDatabase() {
 }
 
 
-// Route guard middleware for checking DB connection
+// Global site URL and request path middleware
+app.use((req, res, next) => {
+  res.locals.currentPath = req.path;
+  res.locals.siteUrl = process.env.SITE_URL || 'https://liteconvert.onrender.com';
+  next();
+});
 
+// Route guard middleware for checking DB connection
 app.use((req, res, next) => {
   if (!dbConnected && req.path !== '/db-setup' && !req.path.startsWith('/api/db-test')) {
     return res.redirect('/db-setup');
@@ -144,6 +150,34 @@ app.post('/api/db-test', async (req, res) => {
   } catch (error) {
     res.json({ success: false, error: error.message });
   }
+});
+
+// Dynamic Sitemap Route
+app.get('/sitemap.xml', async (req, res) => {
+  res.header('Content-Type', 'application/xml');
+  try {
+    const [tools] = await pool.query('SELECT tool_key FROM tools WHERE enabled = 1');
+    const baseUrl = process.env.SITE_URL || 'https://liteconvert.onrender.com';
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+    // Home page
+    xml += `  <url>\n    <loc>${baseUrl}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n`;
+    // Tool pages
+    tools.forEach(t => {
+      xml += `  <url>\n    <loc>${baseUrl}/tool/${t.tool_key}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+    });
+    xml += `</urlset>`;
+    res.send(xml);
+  } catch (err) {
+    res.status(500).send('Error generating sitemap');
+  }
+});
+
+// Robots.txt Route
+app.get('/robots.txt', (req, res) => {
+  res.header('Content-Type', 'text/plain');
+  const baseUrl = process.env.SITE_URL || 'https://liteconvert.onrender.com';
+  res.send(`User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /admin\nDisallow: /api/\n\nSitemap: ${baseUrl}/sitemap.xml`);
 });
 
 // Dashboard Main Route

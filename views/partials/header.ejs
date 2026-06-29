@@ -5,6 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= typeof tool !== 'undefined' ? tool.seo_title : 'LiteConvert - Premium File & Data Format Converter' %></title>
   <meta name="description" content="<%= typeof tool !== 'undefined' ? tool.seo_meta_desc : 'A premium online utility tool for lightning-fast image resizing, format conversions, document compilation, and code formatting.' %>">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="<%= siteUrl %><%= currentPath %>">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:site_name" content="LiteConvert">
+  <meta property="og:title" content="<%= typeof tool !== 'undefined' ? tool.seo_title : 'LiteConvert - Premium File & Data Format Converter' %>">
+  <meta property="og:description" content="<%= typeof tool !== 'undefined' ? tool.seo_meta_desc : 'A premium online utility tool for lightning-fast image resizing, format conversions, document compilation, and code formatting.' %>">
+  <meta property="og:url" content="<%= siteUrl %><%= currentPath %>">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="<%= siteUrl %>/images/og-preview.png">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= typeof tool !== 'undefined' ? tool.seo_title : 'LiteConvert - Premium File & Data Format Converter' %>">
+  <meta name="twitter:description" content="<%= typeof tool !== 'undefined' ? tool.seo_meta_desc : 'A premium online utility tool for lightning-fast image resizing, format conversions, document compilation, and code formatting.' %>">
+  <meta name="twitter:image" content="<%= siteUrl %>/images/og-preview.png">
+
+  <!-- Schema.org JSON-LD Structured Data -->
+  <% if (currentPath === '/') { %>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "LiteConvert",
+    "url": "<%= siteUrl %>/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "<%= siteUrl %>/?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <% } else if (typeof tool !== 'undefined') { %>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "<%= tool.name %>",
+    "url": "<%= siteUrl %>/tool/<%= tool.tool_key %>",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "description": "<%= tool.seo_meta_desc %>"
+  }
+  </script>
+  <% if (typeof faqs !== 'undefined' && faqs.length > 0) { %>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      <% faqs.forEach((faq, index) => { %>
+      {
+        "@type": "Question",
+        "name": "<%= faq.question.replace(/"/g, '\\"').replace(/\r?\n/g, ' ') %>",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "<%= faq.answer.replace(/"/g, '\\"').replace(/\r?\n/g, ' ') %>"
+        }
+      }<%= index < faqs.length - 1 ? ',' : '' %>
+      <% }) %>
+    ]
+  }
+  </script>
+  <% } %>
+  <% } %>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
