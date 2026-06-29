@@ -1,0 +1,52 @@
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">LC</div>
+    <div class="brand-info">
+      <h1>LiteConvert</h1>
+      <span class="version-tag">v1.0.0</span>
+    </div>
+  </div>
+  
+  <nav class="nav-menu">
+    <a href="/" class="nav-btn <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>" id="nav-dashboard">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+      <span>Dashboard</span>
+    </a>
+
+    <% if (typeof sidebarTools !== 'undefined') { %>
+      <% 
+        // Group tools by category
+        const categories = {};
+        sidebarTools.forEach(t => {
+          if (!categories[t.category]) categories[t.category] = [];
+          categories[t.category].push(t);
+        });
+      %>
+      <% Object.keys(categories).forEach(cat => { %>
+        <div class="nav-category-header" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-top: 1.25rem; margin-bottom: 0.5rem; letter-spacing: 0.05em; padding-left: 1rem;">
+          <%= cat %>
+        </div>
+        <% categories[cat].forEach(t => { %>
+          <a href="/tool/<%= t.tool_key %>" class="nav-btn <%= typeof activePage !== 'undefined' && activePage === t.tool_key ? 'active' : '' %>">
+            <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <span style="font-size: 0.85rem;"><%= t.name.replace(' Converter', '').replace(' Generator', '').replace(' Compiler', '').replace(' Formatter', '') %></span>
+          </a>
+        <% }); %>
+      <% }); %>
+    <% } %>
+
+    <a href="/admin" class="nav-btn <%= typeof activePage !== 'undefined' && activePage === 'admin' ? 'active' : '' %>" id="nav-admin" style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;">
+      <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+      <span>Admin Panel</span>
+    </a>
+  </nav>
+  
+  <div class="sidebar-footer">
+    <div class="theme-display">
+      <span>Database Linked</span>
+      <div class="glow-indicator"></div>
+    </div>
+  </div>
+</aside>

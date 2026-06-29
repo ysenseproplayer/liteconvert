@@ -1,0 +1,90 @@
+<%- include('partials/header', { activePage: 'dashboard' }) %>
+<%- include('partials/sidebar', { activePage: 'dashboard' }) %>
+
+<main class="workspace" style="margin-left: 280px; width: calc(100% - 280px);">
+  <header class="workspace-header">
+    <div class="title-area">
+      <h2 id="tool-title">Dashboard</h2>
+      <p id="tool-description" class="subtitle">Access and manage premium high-performance conversion utilities.</p>
+    </div>
+  </header>
+
+  <div class="workspace-content">
+    <!-- Quick stats metrics -->
+    <div class="dashboard-grid">
+      <div class="stat-card">
+        <div class="stat-icon-wrapper">
+          <svg class="stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+        </div>
+        <div class="stat-info">
+          <h4>Total Conversions</h4>
+          <div class="stat-number"><%= totalConversions %></div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon-wrapper success">
+          <svg class="stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </div>
+        <div class="stat-info">
+          <h4>Active Modules</h4>
+          <div class="stat-number"><%= activeCount %> / <%= tools.length %></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrapper warning">
+          <svg class="stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </div>
+        <div class="stat-info">
+          <h4>System Status</h4>
+          <div class="stat-number">Online</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Tools showcase -->
+    <div class="tools-showcase">
+      <h3 class="tools-showcase-title">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+        Available Conversion Engines
+      </h3>
+      
+      <div class="tools-grid">
+        <% tools.forEach(t => { %>
+          <% const isEnabled = t.enabled; %>
+          <a href="<%= isEnabled ? '/tool/' + t.tool_key : '#' %>" class="tool-card <%= isEnabled ? '' : 'disabled' %>">
+            <div class="tool-card-header">
+              <div class="tool-card-icon">
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <% if (!isEnabled) { %>
+                <div class="tool-card-lock">
+                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                  Locked
+                </div>
+              <% } %>
+            </div>
+            <h3><%= t.name %></h3>
+            <p><%= t.page_description.substring(0, 110) %>...</p>
+            <div class="tool-card-footer">
+              <span class="tool-badge <%= isEnabled ? 'stats' : 'disabled' %>">
+                <%= isEnabled ? `${t.use_count} conversions` : 'Disabled' %>
+              </span>
+              <% if (isEnabled) { %>
+                <span class="tool-action-link">
+                  Open Tool
+                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </span>
+              <% } %>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

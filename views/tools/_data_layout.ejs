@@ -1,0 +1,26 @@
+<div class="split-pane">
+  <!-- Input Pane -->
+  <div class="card pane-card">
+    <div class="pane-header">
+      <span id="data-input-label">Input Data</span>
+      <div class="pane-controls">
+        <button class="text-btn" id="btn-clear-data-input">Clear</button>
+        <button class="text-btn secondary" id="btn-load-data-file">Upload File</button>
+        <input type="file" id="data-file-input" class="hidden">
+      </div>
+    </div>
+    <textarea id="data-input" class="pane-textarea mono" placeholder="Paste or type your data here..."></textarea>
+  </div>
+  
+  <!-- Output Pane -->
+  <div class="card pane-card">
+    <div class="pane-header">
+      <span id="data-output-label">Output Data</span>
+      <div class="pane-controls">
+        <button class="text-btn success" id="btn-copy-data-output">Copy</button>
+        <button class="text-btn success secondary" id="btn-download-data-output">Download</button>
+      </div>
+    </div>
+    <textarea id="data-output" class="pane-textarea mono" readonly placeholder="Output will appear here..."></textarea>
+  </div>
+</div>

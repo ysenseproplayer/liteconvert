@@ -1,0 +1,67 @@
+<div class="split-pane">
+  <!-- Input Card -->
+  <div class="card pane-card">
+    <div class="pane-header">
+      <span id="text-input-label">Input Text</span>
+      <div class="pane-controls">
+        <button class="text-btn" id="btn-clear-text-input">Clear</button>
+      </div>
+    </div>
+    <textarea id="text-input" class="pane-textarea <%= ['html-formatter'].includes(tool.tool_key) ? 'mono' : '' %>" placeholder="Enter text here..."></textarea>
+  </div>
+  
+  <!-- Output Card -->
+  <div class="card pane-card flex-col">
+    <div class="pane-header">
+      <span id="text-output-label">Output Result</span>
+      <div class="pane-controls">
+        <% if (tool.tool_key === 'md-html') { %>
+          <button class="text-btn" id="btn-toggle-preview">Show Live Preview</button>
+        <% } %>
+        <button class="text-btn success" id="btn-copy-text-output">Copy</button>
+      </div>
+    </div>
+    <div class="relative-container" style="flex-grow: 1; display: flex; flex-direction: column;">
+      <textarea id="text-output" class="pane-textarea <%= ['html-formatter'].includes(tool.tool_key) ? 'mono' : '' %>" readonly placeholder="Output will appear here..."></textarea>
+      <% if (tool.tool_key === 'md-html') { %>
+        <div id="text-preview" class="pane-preview hidden"></div>
+      <% } %>
+    </div>
+    
+    <!-- Action buttons row depending on active tool -->
+    <div class="code-controls" style="margin-top: 1.25rem;">
+      <% if (tool.tool_key === 'base64') { %>
+        <button class="btn btn-secondary flex-grow" id="btn-base64-encode">Base64 Encode</button>
+        <button class="btn btn-primary flex-grow" id="btn-base64-decode">Base64 Decode</button>
+      <% } else if (tool.tool_key === 'url-codec') { %>
+        <button class="btn btn-secondary flex-grow" id="btn-url-encode">URL Encode</button>
+        <button class="btn btn-primary flex-grow" id="btn-url-decode">URL Decode</button>
+      <% } else if (tool.tool_key === 'case-changer') { %>
+        <div class="case-buttons" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; width: 100%;">
+          <button class="btn btn-secondary" data-case="upper">UPPER</button>
+          <button class="btn btn-secondary" data-case="lower">lower</button>
+          <button class="btn btn-secondary" data-case="title">Title Case</button>
+          <button class="btn btn-secondary" data-case="slug">slug-case</button>
+        </div>
+      <% } else if (tool.tool_key === 'html-formatter') { %>
+        <button class="btn btn-secondary flex-grow" id="btn-format-html">Format HTML</button>
+        <button class="btn btn-primary flex-grow" id="btn-minify-html">Minify HTML</button>
+      <% } else if (tool.tool_key === 'lorem-ipsum') { %>
+        <div style="display: flex; align-items: center; gap: 1rem; width: 100%;">
+          <div class="settings-group" style="margin: 0; width: 150px;">
+            <label for="lorem-paragraphs">Paragraphs</label>
+            <input type="number" id="lorem-paragraphs" class="styled-input" value="3" min="1" max="50">
+          </div>
+          <button class="btn btn-primary flex-grow" id="btn-generate-lorem" style="margin-top: 1.25rem;">Generate Lorem</button>
+        </div>
+      <% } else if (tool.tool_key === 'binary-converter') { %>
+        <div class="case-buttons" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; width: 100%;">
+          <button class="btn btn-secondary" id="btn-text-to-bin">Text to Bin</button>
+          <button class="btn btn-secondary" id="btn-bin-to-text">Bin to Text</button>
+          <button class="btn btn-secondary" id="btn-text-to-hex">Text to Hex</button>
+          <button class="btn btn-secondary" id="btn-hex-to-text">Hex to Text</button>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>

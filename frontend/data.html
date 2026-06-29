@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiteConvert - Data Converter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=4">
+  
+  <script type="importmap">
+  {
+    "imports": {
+      "js-yaml": "https://esm.sh/js-yaml@4.1.0",
+      "papaparse": "https://esm.sh/papaparse@5.4.1",
+      "jspdf": "https://esm.sh/jspdf@2.5.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">LC</div>
+        <div class="brand-info">
+          <h1>LiteConvert</h1>
+          <span class="version-tag">v1.0.0</span>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <!-- Dynamic links -->
+      </nav>
+      <div class="sidebar-footer">
+        <div class="theme-display">
+          <span>Dark Mode Active</span>
+          <div class="glow-indicator"></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="workspace-header">
+        <div class="title-area">
+          <h2 id="tool-title">Data Format Converter</h2>
+          <p id="tool-description" class="subtitle">Transform complex configurations and table data structures between multiple standard formats.</p>
+        </div>
+      </header>
+
+      <div class="workspace-content">
+        <div class="action-bar card">
+          <button class="action-btn active" data-mode="json-yaml" id="btn-json-yaml">JSON to YAML</button>
+          <button class="action-btn" data-mode="yaml-json" id="btn-yaml-json">YAML to JSON</button>
+          <button class="action-btn" data-mode="json-csv" id="btn-json-csv">JSON to CSV</button>
+          <button class="action-btn" data-mode="csv-json" id="btn-csv-json">CSV to JSON</button>
+          <button class="action-btn" data-mode="xml-json" id="btn-xml-json">XML to JSON</button>
+        </div>
+        
+        <div class="split-pane">
+          <div class="card pane-card">
+            <div class="pane-header">
+              <span id="data-input-label">Input JSON</span>
+              <div class="pane-controls">
+                <button class="text-btn" id="btn-clear-data-input">Clear</button>
+                <button class="text-btn secondary" id="btn-load-data-file">Upload File</button>
+                <input type="file" id="data-file-input" class="hidden" accept=".json,.yaml,.yml,.csv,.xml">
+              </div>
+            </div>
+            <textarea id="data-input" class="pane-textarea mono" placeholder="Paste or type your data here..."></textarea>
+          </div>
+          
+          <div class="card pane-card">
+            <div class="pane-header">
+              <span id="data-output-label">Output YAML</span>
+              <div class="pane-controls">
+                <button class="text-btn success" id="btn-copy-data-output">Copy</button>
+                <button class="text-btn success secondary" id="btn-download-data-output">Download</button>
+              </div>
+            </div>
+            <textarea id="data-output" class="pane-textarea mono" readonly placeholder="Output will appear here..."></textarea>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script type="module" src="./src/data.js?v=4"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# LiteConvert — Render Deployment Config
+# Render reads this file to know how to build and run the app.
+
+services:
+  - type: web
+    name: liteconvert
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000          # Render assigns this automatically
+      - key: DB_HOST
+        sync: false           # Set this in Render dashboard
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true   # Render auto-generates a secure random secret

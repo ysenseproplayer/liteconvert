@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+<%- include('partials/sidebar') %>
+
+<main class="workspace" style="margin-left: 280px; width: calc(100% - 280px); display: flex; align-items: center; justify-content: center; min-height: 80vh;">
+  <div style="background-color: rgba(17, 24, 39, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 20px; padding: 3rem 2rem; max-width: 480px; text-align: center; box-shadow: 0 0 30px rgba(239, 68, 68, 0.15); backdrop-filter: blur(20px);">
+    <div style="width: 72px; height: 72px; background-color: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);">
+      <svg style="width: 36px; height: 36px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+      </svg>
+    </div>
+    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Access Restricted</h2>
+    <p style="color: #9ca3af; font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6;">The tool <strong>"<%= toolName %>"</strong> has been disabled by the system administrator.</p>
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+      <a href="/" class="btn btn-secondary">Go to Dashboard</a>
+      <a href="/admin" class="btn btn-primary">Enable in Admin Panel</a>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

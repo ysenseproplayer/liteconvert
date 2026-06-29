@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiteConvert - Code Formatter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <script type="importmap">
+  {
+    "imports": {
+      "js-yaml": "https://esm.sh/js-yaml@4.1.0",
+      "papaparse": "https://esm.sh/papaparse@5.4.1",
+      "jspdf": "https://esm.sh/jspdf@2.5.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">LC</div>
+        <div class="brand-info">
+          <h1>LiteConvert</h1>
+          <span class="version-tag">v1.0.0</span>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <!-- Dynamic links -->
+      </nav>
+      <div class="sidebar-footer">
+        <div class="theme-display">
+          <span>Dark Mode Active</span>
+          <div class="glow-indicator"></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="workspace-header">
+        <div class="title-area">
+          <h2 id="tool-title">Code Formatter</h2>
+          <p id="tool-description" class="subtitle">Beautify or compress markup, styling sheets, and application source codes.</p>
+        </div>
+      </header>
+
+      <div class="workspace-content">
+        <div class="action-bar card">
+          <button class="action-btn active" data-lang="html" id="btn-code-html">HTML</button>
+          <button class="action-btn" data-lang="css" id="btn-code-css">CSS</button>
+          <button class="action-btn" data-lang="js" id="btn-code-js">JavaScript</button>
+        </div>
+
+        <div class="split-pane">
+          <div class="card pane-card">
+            <div class="pane-header">
+              <span>Raw Code Input</span>
+              <div class="pane-controls">
+                <button class="text-btn" id="btn-clear-code-input">Clear</button>
+              </div>
+            </div>
+            <textarea id="code-input" class="pane-textarea mono" placeholder="Paste unformatted code..."></textarea>
+          </div>
+          
+          <div class="card pane-card flex-col">
+            <div class="pane-header">
+              <span>Output Code</span>
+              <div class="pane-controls">
+                <button class="text-btn success" id="btn-copy-code-output">Copy</button>
+              </div>
+            </div>
+            <textarea id="code-output" class="pane-textarea mono" readonly placeholder="Click Format or Minify to execute..."></textarea>
+            
+            <div class="code-controls">
+              <button class="btn btn-secondary flex-grow" id="btn-format-code">Beautify Code</button>
+              <button class="btn btn-primary flex-grow" id="btn-minify-code">Minify Code</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script type="module" src="./src/code.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiteConvert Admin - Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=5">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .login-card {
+      max-width: 420px;
+      width: 100%;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-lg);
+    }
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      margin: 0 auto 1rem;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    .error-msg {
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <div class="login-header">
+      <div class="logo">LC</div>
+      <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 0.25rem;">Administrator Access</h2>
+      <p style="color: var(--text-secondary); font-size: 0.85rem;">Authenticate to access tool parameters and logs.</p>
+    </div>
+
+    <% if (error) { %>
+      <div class="error-msg"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/admin/login">
+      <div class="settings-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" class="styled-input" required autocomplete="off" placeholder="Username">
+      </div>
+      
+      <div class="settings-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="styled-input" required placeholder="Password">
+      </div>
+      
+      <button type="submit" class="btn btn-primary btn-full" style="margin-top: 1.5rem;">
+        Authenticate
+      </button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 1.5rem;">
+      <a href="/" style="font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; hover: color: var(--accent-primary);">Return to Dashboard</a>
+    </div>
+  </div>
+</body>
+</html>

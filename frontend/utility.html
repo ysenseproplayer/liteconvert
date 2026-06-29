@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiteConvert - Utility Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <script type="importmap">
+  {
+    "imports": {
+      "js-yaml": "https://esm.sh/js-yaml@4.1.0",
+      "papaparse": "https://esm.sh/papaparse@5.4.1",
+      "jspdf": "https://esm.sh/jspdf@2.5.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">LC</div>
+        <div class="brand-info">
+          <h1>LiteConvert</h1>
+          <span class="version-tag">v1.0.0</span>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <!-- Dynamic links -->
+      </nav>
+      <div class="sidebar-footer">
+        <div class="theme-display">
+          <span>Dark Mode Active</span>
+          <div class="glow-indicator"></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="workspace-header">
+        <div class="title-area">
+          <h2 id="tool-title">Utility Tools</h2>
+          <p id="tool-description" class="subtitle">Useful helpers for binary encoding, text transforms, and general formatting.</p>
+        </div>
+      </header>
+
+      <div class="workspace-content">
+        <div class="action-bar card">
+          <button class="action-btn active" data-util-mode="base64" id="btn-util-base64">Base64 Encoder/Decoder</button>
+          <button class="action-btn" data-util-mode="case" id="btn-util-case">Text Case Changer</button>
+        </div>
+
+        <!-- Base64 Converter -->
+        <div id="util-base64-container" class="util-sub-section">
+          <div class="split-pane">
+            <div class="card pane-card">
+              <div class="pane-header">
+                <span>Input String</span>
+                <button class="text-btn" id="btn-clear-base64-input">Clear</button>
+              </div>
+              <textarea id="base64-input" class="pane-textarea" placeholder="Enter text to encode or base64 to decode..."></textarea>
+            </div>
+            <div class="card pane-card flex-col">
+              <div class="pane-header">
+                <span>Output String</span>
+                <button class="text-btn success" id="btn-copy-base64-output">Copy</button>
+              </div>
+              <textarea id="base64-output" class="pane-textarea" readonly placeholder="Output string will display here..."></textarea>
+              
+              <div class="code-controls">
+                <button class="btn btn-secondary flex-grow" id="btn-base64-encode">Base64 Encode</button>
+                <button class="btn btn-primary flex-grow" id="btn-base64-decode">Base64 Decode</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case Changer -->
+        <div id="util-case-container" class="util-sub-section hidden">
+          <div class="split-pane">
+            <div class="card pane-card">
+              <div class="pane-header">
+                <span>Raw Text Input</span>
+                <button class="text-btn" id="btn-clear-case-input">Clear</button>
+              </div>
+              <textarea id="case-input" class="pane-textarea" placeholder="Type or paste text to transform..."></textarea>
+            </div>
+            <div class="card pane-card flex-col">
+              <div class="pane-header">
+                <span>Transformed Output</span>
+                <button class="text-btn success" id="btn-copy-case-output">Copy</button>
+              </div>
+              <textarea id="case-output" class="pane-textarea" readonly placeholder="Transformed output will display here..."></textarea>
+              
+              <div class="case-buttons">
+                <button class="btn btn-secondary" data-case="upper">UPPERCASE</button>
+                <button class="btn btn-secondary" data-case="lower">lowercase</button>
+                <button class="btn btn-secondary" data-case="title">Title Case</button>
+                <button class="btn btn-secondary" data-case="slug">slug-case</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script type="module" src="./src/utility.js"></script>
+</body>
+</html>

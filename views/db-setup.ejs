@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiteConvert - Database Configuration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #080b11;
+      --bg-secondary: #0f1622;
+      --bg-tertiary: #172237;
+      --card-bg: rgba(17, 24, 39, 0.7);
+      --card-border: rgba(55, 65, 81, 0.4);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --accent-primary: #6366f1;
+      --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+      --danger: #ef4444;
+      --success: #10b981;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.08) 0px, transparent 50%);
+    }
+    .setup-container {
+      max-width: 580px;
+      width: 100%;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .logo {
+      width: 52px;
+      height: 52px;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin: 0 auto 1rem;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    h2 { font-family: 'Outfit', sans-serif; font-size: 1.75rem; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+    .error-box {
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+      overflow-x: auto;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+    input {
+      width: 100%;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--accent-primary); }
+    .btn {
+      width: 100%;
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 0.85rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+    .guide-steps {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    .guide-steps h4 { color: var(--text-primary); margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .guide-steps ol { padding-left: 1.2rem; }
+    .guide-steps li { margin-bottom: 0.4rem; }
+    .code-block {
+      background: var(--bg-secondary);
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+      margin-top: 0.25rem;
+      display: block;
+      font-size: 0.8rem;
+      border: 1px solid var(--card-border);
+    }
+  </style>
+</head>
+<body>
+  <div class="setup-container">
+    <div class="header">
+      <div class="logo">LC</div>
+      <h2>MySQL Database Required</h2>
+      <p class="subtitle">LiteConvert full-stack requires an active MySQL connection to load tools CMS parameters and logs.</p>
+    </div>
+
+    <% if (error) { %>
+      <div class="error-box">
+        <strong>Connection Failure Log:</strong><br>
+        <%= error %>
+      </div>
+    <% } %>
+
+    <form id="db-setup-form">
+      <div class="form-group">
+        <label for="host">MySQL Host</label>
+        <input type="text" id="host" value="<%= host || 'localhost' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="user">Database Username</label>
+        <input type="text" id="user" value="<%= user || 'root' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Database Password</label>
+        <input type="password" id="password" value="">
+      </div>
+      <div class="form-group">
+        <label for="dbName">Database Name</label>
+        <input type="text" id="dbName" value="<%= dbName || 'liteconvert' %>" required>
+      </div>
+      
+      <button type="submit" class="btn" id="btn-submit">
+        <span>Test & Connect Database</span>
+      </button>
+    </form>
+
+    <div class="guide-steps">
+      <h4>Quick Startup Instructions:</h4>
+      <ol>
+        <li>Make sure your local MySQL/MariaDB server is running (e.g. XAMPP, WampServer, or direct service).</li>
+        <li>Create the database and import the schemas using your terminal:
+          <code class="code-block">mysql -u <%= user || 'root' %> -p -e "CREATE DATABASE IF NOT EXISTS <%= dbName || 'liteconvert' %>;"<br>mysql -u <%= user || 'root' %> -p <%= dbName || 'liteconvert' %> &lt; schema.sql</code>
+        </li>
+        <li>Enter details above and test connection. It will update the configurations automatically!</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('db-setup-form');
+    const btn = document.getElementById('btn-submit');
+    
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.querySelector('span').textContent = 'Connecting...';
+      
+      const payload = {
+        host: document.getElementById('host').value,
+        user: document.getElementById('user').value,
+        password: document.getElementById('password').value,
+        dbName: document.getElementById('dbName').value
+      };
+      
+      try {
+        const res = await fetch('/api/db-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          alert('Database connection successful! Redirecting...');
+          window.location.href = '/';
+        } else {
+          alert('Failed to connect: ' + data.error);
+          window.location.reload();
+        }
+      } catch (err) {
+        alert('Network communication error: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.querySelector('span').textContent = 'Test & Connect Database';
+      }
+    });
+  </script>
+</body>
+</html>

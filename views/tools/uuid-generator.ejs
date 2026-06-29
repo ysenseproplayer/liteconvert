@@ -1,0 +1,12 @@
+<div class="grid-layout">
+  <div class="card">
+    <h3>UUID v4 Parameters</h3>
+    <div class="settings-group"><label for="uuid-count">Quantity</label><input type="number" id="uuid-count" class="styled-input" value="5" min="1" max="100"></div>
+    <label class="checkbox-container" style="margin-top:1rem;"><input type="checkbox" id="uuid-upper"><span class="checkmark"></span>UPPERCASE UUIDs</label>
+    <button class="btn btn-primary btn-full mt-lg" id="btn-gen-uuid">Generate UUIDs</button>
+  </div>
+  <div class="card pane-card">
+    <div class="pane-header"><span>Generated UUIDs</span><button class="text-btn success" id="btn-copy-uuid">Copy</button></div>
+    <textarea id="uuid-output" class="pane-textarea mono" readonly style="min-height:220px;"></textarea>
+  </div>
+</div>

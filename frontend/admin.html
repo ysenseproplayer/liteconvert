@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiteConvert - Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=4">
+  
+  <script type="importmap">
+  {
+    "imports": {
+      "js-yaml": "https://esm.sh/js-yaml@4.1.0",
+      "papaparse": "https://esm.sh/papaparse@5.4.1",
+      "jspdf": "https://esm.sh/jspdf@2.5.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">LC</div>
+        <div class="brand-info">
+          <h1>LiteConvert</h1>
+          <span class="version-tag">v1.0.0</span>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <!-- Dynamic links -->
+      </nav>
+      <div class="sidebar-footer">
+        <div class="theme-display">
+          <span>Dark Mode Active</span>
+          <div class="glow-indicator"></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="workspace-header">
+        <div class="title-area">
+          <h2 id="tool-title">Admin Control Panel</h2>
+          <p id="tool-description" class="subtitle">Modify conversion engine parameters, custom descriptions, tool availability, and system metrics.</p>
+        </div>
+      </header>
+
+      <div class="workspace-content">
+        <!-- Stats Widgets -->
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <div class="stat-icon-wrapper">
+              <svg class="stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+            </div>
+            <div class="stat-info">
+              <h4>System Total Usage</h4>
+              <div class="stat-number" id="admin-total-conversions">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrapper success">
+              <svg class="stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+            </div>
+            <div class="stat-info">
+              <h4>Enabled Modules</h4>
+              <div class="stat-number" id="admin-enabled-count">0 / 5</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrapper warning">
+              <svg class="stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            </div>
+            <div class="stat-info">
+              <h4>Engine Status</h4>
+              <div class="stat-number">Healthy</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="settings-section-title">Module Settings Manager</h3>
+        
+        <!-- Tools Management Table -->
+        <div class="card admin-card">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Tool Module</th>
+                <th style="width: 45%;">Custom Description</th>
+                <th style="width: 15%; text-align: center;">Status</th>
+                <th style="width: 15%; text-align: center;">Conversions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-tools-table-body">
+              <!-- Dynamically Populated Rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="settings-section-title">Global Configurations</h3>
+        
+        <!-- Global parameters inputs -->
+        <div class="grid-layout">
+          <div class="card">
+            <h3>Engine Restrictions</h3>
+            <div class="settings-group">
+              <label for="admin-max-img-size">Max Image Upload Limit (MB)</label>
+              <input type="number" id="admin-max-img-size" class="styled-input" placeholder="e.g. 15">
+            </div>
+            <div class="settings-row">
+              <div class="settings-group">
+                <label for="admin-def-img-format">Default Image Output</label>
+                <select id="admin-def-img-format" class="styled-select">
+                  <option value="image/png">PNG</option>
+                  <option value="image/jpeg">JPEG</option>
+                  <option value="image/webp">WebP</option>
+                </select>
+              </div>
+              <div class="settings-group">
+                <label for="admin-def-img-quality">Default Image Quality (%)</label>
+                <input type="number" id="admin-def-img-quality" min="10" max="100" class="styled-input" placeholder="e.g. 92">
+              </div>
+            </div>
+            <button class="btn btn-primary mt-lg" id="btn-save-global-settings">Save Global Settings</button>
+          </div>
+
+          <div class="card danger-card">
+            <h3>Danger Zone</h3>
+            <p class="card-desc">Irreversible system configuration and data wipe utilities.</p>
+            <div class="danger-row">
+              <div class="danger-info">
+                <h4>Wipe Conversions Log</h4>
+                <p>Resets all conversion usage counters to zero.</p>
+              </div>
+              <button class="btn btn-danger" id="btn-wipe-stats">Wipe Logs</button>
+            </div>
+            <div class="danger-row">
+              <div class="danger-info">
+                <h4>Restore Factory Defaults</h4>
+                <p>Wipes all custom labels, toggles, and restrictions.</p>
+              </div>
+              <button class="btn btn-danger" id="btn-wipe-config">Reset All</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script type="module" src="./src/admin.js?v=4"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiteConvert - Document Compiler</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <script type="importmap">
+  {
+    "imports": {
+      "js-yaml": "https://esm.sh/js-yaml@4.1.0",
+      "papaparse": "https://esm.sh/papaparse@5.4.1",
+      "jspdf": "https://esm.sh/jspdf@2.5.1"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">LC</div>
+        <div class="brand-info">
+          <h1>LiteConvert</h1>
+          <span class="version-tag">v1.0.0</span>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <!-- Dynamic links -->
+      </nav>
+      <div class="sidebar-footer">
+        <div class="theme-display">
+          <span>Dark Mode Active</span>
+          <div class="glow-indicator"></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="workspace-header">
+        <div class="title-area">
+          <h2 id="tool-title">Document Compiler</h2>
+          <p id="tool-description" class="subtitle">Convert text layouts to portable documents or structure rich text formats.</p>
+        </div>
+      </header>
+
+      <div class="workspace-content">
+        <div class="action-bar card">
+          <button class="action-btn active" data-doc-mode="md-html" id="btn-md-html">Markdown ↔ HTML</button>
+          <button class="action-btn" data-doc-mode="txt-pdf" id="btn-txt-pdf">TXT to PDF</button>
+        </div>
+
+        <!-- Sub-section: Markdown / HTML -->
+        <div id="doc-md-html-container" class="doc-sub-section">
+          <div class="toggle-switch-container card">
+            <span>Conversion Direction:</span>
+            <button class="direction-toggle" id="btn-toggle-direction">
+              <span id="direction-state-1" class="direction-state active">Markdown to HTML</span>
+              <svg class="exchange-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+              <span id="direction-state-2" class="direction-state">HTML to Markdown</span>
+            </button>
+          </div>
+
+          <div class="split-pane">
+            <div class="card pane-card">
+              <div class="pane-header">
+                <span id="doc-input-label">Markdown Input</span>
+                <button class="text-btn" id="btn-clear-doc-input">Clear</button>
+              </div>
+              <textarea id="doc-input" class="pane-textarea mono" placeholder="Type Markdown here..."></textarea>
+            </div>
+            <div class="card pane-card">
+              <div class="pane-header">
+                <span id="doc-output-label">HTML Output</span>
+                <div class="pane-controls">
+                  <button class="text-btn" id="btn-toggle-preview">Show Live Preview</button>
+                  <button class="text-btn success" id="btn-copy-doc-output">Copy</button>
+                </div>
+              </div>
+              <div id="doc-output-wrapper" class="relative-container">
+                <textarea id="doc-output" class="pane-textarea mono" readonly placeholder="HTML output will load here..."></textarea>
+                <div id="doc-preview" class="pane-preview hidden"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-section: TXT to PDF -->
+        <div id="doc-txt-pdf-container" class="doc-sub-section hidden">
+          <div class="grid-layout">
+            <div class="card pane-card span-8">
+              <div class="pane-header">
+                <span>Enter document body (Plain Text)</span>
+                <div class="pane-controls">
+                  <button class="text-btn" id="btn-clear-pdf-input">Clear</button>
+                  <button class="text-btn secondary" id="btn-load-pdf-txt">Load Text File</button>
+                  <input type="file" id="pdf-txt-file-input" class="hidden" accept=".txt">
+                </div>
+              </div>
+              <textarea id="pdf-text-input" class="pane-textarea tall" placeholder="Write text that you'd like to convert to PDF. Document pagination, Helvetica fonts, and boundaries will be set automatically..."></textarea>
+            </div>
+            <div class="card settings-card span-4">
+              <h3>PDF Compilation</h3>
+              <p class="card-desc">Clicking compile will run the formatting engine, construct a paginated layout under ISO A4 standards, and initiate a file download.</p>
+              <div class="settings-group">
+                <label for="pdf-filename">Filename</label>
+                <input type="text" id="pdf-filename" class="styled-input" value="document.pdf" placeholder="document.pdf">
+              </div>
+              <button class="btn btn-primary btn-full mt-lg" id="btn-compile-pdf">
+                <span>Compile PDF</span>
+                <svg class="btn-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" /></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script type="module" src="./src/document.js"></script>
+</body>
+</html>
