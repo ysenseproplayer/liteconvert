@@ -135,6 +135,24 @@ button, input, select, textarea {
   flex-direction: column;
   gap: 0.5rem;
   flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  outline: none; /* remove default focus border */
+}
+
+/* Beautiful custom thin scrollbar for nav-menu */
+.nav-menu::-webkit-scrollbar {
+  width: 4px;
+}
+.nav-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+.nav-menu::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: var(--radius-full);
+}
+.nav-menu::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
 }
 
 .nav-btn {

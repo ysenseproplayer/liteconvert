@@ -187,10 +187,20 @@ app.get('/', async (req, res) => {
     const [activeToolsCount] = await pool.query('SELECT COUNT(*) as count FROM tools WHERE enabled = 1');
     const [tools] = await pool.query('SELECT tool_key, name, category, page_description, enabled, use_count FROM tools ORDER BY category, name');
     
+    // Fetch a sample of FAQs for the homepage SEO content
+    const [faqs] = await pool.query(`
+      SELECT f.question, f.answer, t.name as tool_name 
+      FROM faqs f 
+      JOIN tools t ON f.tool_id = t.id 
+      WHERE t.enabled = 1 
+      LIMIT 6
+    `);
+    
     res.render('index', {
       totalConversions: stats[0].total || 0,
       activeCount: activeToolsCount[0].count,
-      tools: tools
+      tools: tools,
+      faqs: faqs
     });
   } catch (err) {
     res.status(500).send('Internal Server Error');
