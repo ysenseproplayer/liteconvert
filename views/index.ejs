@@ -88,7 +88,7 @@
                   <% } %>
                 </div>
                 <h3><%= t.name %></h3>
-                <p><%= t.page_description.substring(0, 110) %>...</p>
+                <p><%= (t.seo_meta_desc || '').substring(0, 110) %>...</p>
                 <div class="tool-card-footer">
                   <span class="tool-badge <%= isEnabled ? 'stats' : 'disabled' %>">
                     <%= isEnabled ? `${t.use_count} conversions` : 'Disabled' %>
