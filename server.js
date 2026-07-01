@@ -194,7 +194,7 @@ app.get('/', async (req, res) => {
   try {
     const [stats] = await pool.query('SELECT SUM(use_count) as total FROM tools');
     const [activeToolsCount] = await pool.query('SELECT COUNT(*) as count FROM tools WHERE enabled = 1');
-    const [tools] = await pool.query('SELECT tool_key, name, category, page_description, enabled, use_count FROM tools ORDER BY category, name');
+    const [tools] = await pool.query('SELECT tool_key, name, category, seo_meta_desc, enabled, use_count FROM tools ORDER BY category, name');
     
     // Fetch a sample of FAQs for the homepage SEO content
     const [faqs] = await pool.query(`
