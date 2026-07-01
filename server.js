@@ -56,7 +56,8 @@ async function connectDatabase() {
       database: process.env.DB_NAME || 'liteconvert',
       waitForConnections: true,
       connectionLimit: 10,
-      queueLimit: 0
+      queueLimit: 0,
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined
     });
     
     // Test the connection
