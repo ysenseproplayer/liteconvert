@@ -43,12 +43,23 @@
     </a>
   </nav>
   
-  <div class="sidebar-footer">
-    <div class="theme-display">
-      <span>Database Linked</span>
-      <div class="glow-indicator"></div>
+  <!-- SIDEBAR AD SLOT -->
+  <% if (typeof tool !== 'undefined' && tool.ad_sidebar && tool.ad_sidebar.trim() !== '') { %>
+    <div class="sidebar-ad" style="margin-top: 1rem; margin-bottom: 1rem; padding: 0.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); max-width: 100%; overflow: hidden;">
+      <%- tool.ad_sidebar %>
     </div>
-  </div>
+  <% } else if (typeof globalSettings !== 'undefined' && globalSettings.ad_sidebar && globalSettings.ad_sidebar.trim() !== '') { %>
+    <div class="sidebar-ad" style="margin-top: 1rem; margin-bottom: 1rem; padding: 0.5rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); max-width: 100%; overflow: hidden;">
+      <%- globalSettings.ad_sidebar %>
+    </div>
+  <% } %>
+
+  <div class="sidebar-footer">
+      <div class="theme-display">
+        <span>Database Linked</span>
+        <div class="glow-indicator"></div>
+      </div>
+    </div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const activeBtn = document.querySelector('.nav-btn.active');

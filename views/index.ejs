@@ -10,6 +10,13 @@
   </header>
 
   <div class="workspace-content">
+    <!-- HEADER AD UNIT -->
+    <% if (typeof globalSettings !== 'undefined' && globalSettings.ad_header) { %>
+      <div class="ad-container ad-header" style="margin-bottom: 2rem; text-align: center;">
+        <%- globalSettings.ad_header %>
+      </div>
+    <% } %>
+
     <!-- Quick stats metrics -->
     <div class="dashboard-grid">
       <div class="stat-card">
@@ -50,39 +57,54 @@
         Available Conversion Engines
       </h3>
       
-      <div class="tools-grid">
-        <% tools.forEach(t => { %>
-          <% const isEnabled = t.enabled; %>
-          <a href="<%= isEnabled ? '/tool/' + t.tool_key : '#' %>" class="tool-card <%= isEnabled ? '' : 'disabled' %>">
-            <div class="tool-card-header">
-              <div class="tool-card-icon">
-                <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-              <% if (!isEnabled) { %>
-                <div class="tool-card-lock">
-                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                  Locked
+      <%
+        const categories = {};
+        tools.forEach(t => {
+          if (!categories[t.category]) categories[t.category] = [];
+          categories[t.category].push(t);
+        });
+      %>
+      
+      <% Object.keys(categories).forEach(cat => { %>
+        <div class="category-block" style="margin-top: 3rem; margin-bottom: 2rem;">
+          <h4 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--accent-primary); text-transform: uppercase; margin-bottom: 1.5rem; letter-spacing: 0.05em; border-bottom: 2px solid rgba(99, 102, 241, 0.2); padding-bottom: 0.5rem; display: inline-block;">
+            <%= cat %>
+          </h4>
+          <div class="tools-grid">
+            <% categories[cat].forEach(t => { %>
+              <% const isEnabled = t.enabled; %>
+              <a href="<%= isEnabled ? '/tool/' + t.tool_key : '#' %>" class="tool-card <%= isEnabled ? '' : 'disabled' %>">
+                <div class="tool-card-header">
+                  <div class="tool-card-icon">
+                    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                  <% if (!isEnabled) { %>
+                    <div class="tool-card-lock">
+                      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                      Locked
+                    </div>
+                  <% } %>
                 </div>
-              <% } %>
-            </div>
-            <h3><%= t.name %></h3>
-            <p><%= t.page_description.substring(0, 110) %>...</p>
-            <div class="tool-card-footer">
-              <span class="tool-badge <%= isEnabled ? 'stats' : 'disabled' %>">
-                <%= isEnabled ? `${t.use_count} conversions` : 'Disabled' %>
-              </span>
-              <% if (isEnabled) { %>
-                <span class="tool-action-link">
-                  Open Tool
-                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                </span>
-              <% } %>
-            </div>
-          </a>
-        <% }); %>
-      </div>
+                <h3><%= t.name %></h3>
+                <p><%= t.page_description.substring(0, 110) %>...</p>
+                <div class="tool-card-footer">
+                  <span class="tool-badge <%= isEnabled ? 'stats' : 'disabled' %>">
+                    <%= isEnabled ? `${t.use_count} conversions` : 'Disabled' %>
+                  </span>
+                  <% if (isEnabled) { %>
+                    <span class="tool-action-link">
+                      Open Tool
+                      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </span>
+                  <% } %>
+                </div>
+              </a>
+            <% }); %>
+          </div>
+        </div>
+      <% }); %>
     </div>
 
     <!-- DYNAMIC FAQ SECTION -->
@@ -105,6 +127,12 @@
             </div>
           <% }); %>
         </div>
+      </div>
+    <% } %>
+    <!-- FOOTER AD UNIT -->
+    <% if (typeof globalSettings !== 'undefined' && globalSettings.ad_footer) { %>
+      <div class="ad-container ad-footer" style="margin-top: 3rem; text-align: center;">
+        <%- globalSettings.ad_footer %>
       </div>
     <% } %>
   </div>

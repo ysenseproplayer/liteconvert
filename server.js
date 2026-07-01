@@ -102,13 +102,21 @@ app.use(async (req, res, next) => {
   if (!dbConnected) return next();
   try {
     // Get enabled tools list for sidebars
-    const [tools] = await pool.query('SELECT tool_key, name, category, enabled FROM tools ORDER BY category, name');
+    const [tools] = await pool.query('SELECT * FROM tools ORDER BY category, name');
     const [stats] = await pool.query('SELECT SUM(use_count) as total FROM tools');
+    
+    // Fetch settings (like Ads code)
+    const [settingsRows] = await pool.query('SELECT `key`, `value` FROM settings');
+    const settingsMap = {};
+    settingsRows.forEach(row => {
+      settingsMap[row.key] = row.value;
+    });
     
     res.locals.sidebarTools = tools.filter(t => t.enabled);
     res.locals.allTools = tools;
     res.locals.totalConversions = stats[0].total || 0;
     res.locals.adminLoggedIn = !!req.session.adminId;
+    res.locals.globalSettings = settingsMap;
     next();
   } catch (err) {
     console.error('Error fetching global view settings:', err);
@@ -314,12 +322,25 @@ app.get('/admin', requireAdmin, async (req, res) => {
 
 // Update Tool Details CMS
 app.post('/api/admin/tools/update', requireAdmin, async (req, res) => {
-  const { tool_key, name, desc, seo_title, seo_meta_desc } = req.body;
+  const { tool_key, name, seo_title, seo_meta_desc, description_top, description_bottom, ad_top, ad_bottom, ad_sidebar } = req.body;
   try {
     await pool.query(
-      'UPDATE tools SET name = ?, page_description = ?, seo_title = ?, seo_meta_desc = ? WHERE tool_key = ?',
-      [name, desc, seo_title, seo_meta_desc, tool_key]
+      'UPDATE tools SET name = ?, seo_title = ?, seo_meta_desc = ?, description_top = ?, description_bottom = ?, ad_top = ?, ad_bottom = ?, ad_sidebar = ? WHERE tool_key = ?',
+      [name, seo_title, seo_meta_desc, description_top, description_bottom, ad_top, ad_bottom, ad_sidebar, tool_key]
     );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update Ads Settings CMS
+app.post('/api/admin/settings/update', requireAdmin, async (req, res) => {
+  const { ad_header, ad_sidebar, ad_footer } = req.body;
+  try {
+    await pool.query('INSERT INTO settings (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?', ['ad_header', ad_header, ad_header]);
+    await pool.query('INSERT INTO settings (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?', ['ad_sidebar', ad_sidebar, ad_sidebar]);
+    await pool.query('INSERT INTO settings (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?', ['ad_footer', ad_footer, ad_footer]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

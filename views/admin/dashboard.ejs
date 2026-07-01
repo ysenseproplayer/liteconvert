@@ -53,26 +53,25 @@
       <table class="admin-table">
         <thead>
           <tr>
-            <th style="width: 20%;">Tool name</th>
-            <th style="width: 25%;">SEO Title</th>
-            <th style="width: 35%;">Page Content (SEO)</th>
-            <th style="width: 10%; text-align: center;">Status</th>
-            <th style="width: 10%; text-align: center;">Conversions</th>
+            <th style="width: 25%;">Tool name</th>
+            <th style="width: 25%;">Category</th>
+            <th style="width: 15%; text-align: center;">Conversions</th>
+            <th style="width: 15%; text-align: center;">Status</th>
+            <th style="width: 20%; text-align: center;">Actions</th>
           </tr>
         </thead>
         <tbody>
           <% tools.forEach(t => { %>
             <tr data-tool-key="<%= t.tool_key %>">
               <td>
-                <input type="text" class="inline-edit-input bold txt-name" value="<%= t.name %>" style="width: 100%;"><br>
-                <span style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono); padding-left: 0.6rem;"><%= t.tool_key %></span>
+                <span class="bold" style="color: var(--text-primary); font-size: 0.95rem;"><%= t.name %></span><br>
+                <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);"><%= t.tool_key %></span>
               </td>
-              <td>
-                <input type="text" class="inline-edit-input txt-seo-title" value="<%= t.seo_title %>" style="width: 100%; font-size: 0.85rem;"><br>
-                <textarea class="inline-edit-input txt-seo-desc" style="width: 100%; font-size: 0.75rem; min-height: 50px; margin-top: 0.25rem;" placeholder="Meta Desc"><%= t.seo_meta_desc %></textarea>
+              <td style="color: var(--text-secondary); font-size: 0.9rem;">
+                <%= t.category %>
               </td>
-              <td>
-                <textarea class="inline-edit-input txt-desc" style="width: 100%; font-size: 0.85rem; min-height: 80px; line-height: 1.5;"><%= t.page_description %></textarea>
+              <td style="text-align: center; font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-secondary);">
+                <%= t.use_count %>
               </td>
               <td style="text-align: center; vertical-align: middle;">
                 <label class="switch">
@@ -80,8 +79,8 @@
                   <span class="slider-toggle"></span>
                 </label>
               </td>
-              <td style="text-align: center; vertical-align: middle; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary);">
-                <%= t.use_count %>
+              <td style="text-align: center; vertical-align: middle;">
+                <button class="btn btn-secondary btn-edit-tool" data-tool-key="<%= t.tool_key %>" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Edit Settings</button>
               </td>
             </tr>
           <% }); %>
@@ -132,9 +131,34 @@
       </div>
     </div>
 
+    <!-- ADS MANAGEMENT MODULE -->
+    <h3 class="settings-section-title">Ads Manager (Monetization Settings)</h3>
+    <div class="card admin-card" style="margin-bottom: 2.5rem; padding: 2rem;">
+      <p class="card-desc" style="margin-bottom: 1.5rem; color: var(--text-secondary);">Configure ad script slots to embed HTML/JS code blocks (AdSense, Ezoic, etc.) dynamically across the site.</p>
+      
+      <form id="ads-config-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <div class="settings-group">
+          <label for="ad-header" style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; display: block; font-size: 0.95rem;">Header Ad Script (renders below workspace header)</label>
+          <textarea id="ad-header" class="pane-textarea mono" style="min-height: 100px; font-size: 0.85rem;" placeholder="Paste header ad HTML/JS code here..."><%= globalSettings.ad_header || '' %></textarea>
+        </div>
+        
+        <div class="settings-group">
+          <label for="ad-sidebar" style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; display: block; font-size: 0.95rem;">Sidebar Ad Script (renders inside sidebar navigation menu)</label>
+          <textarea id="ad-sidebar" class="pane-textarea mono" style="min-height: 100px; font-size: 0.85rem;" placeholder="Paste sidebar ad HTML/JS code here..."><%= globalSettings.ad_sidebar || '' %></textarea>
+        </div>
+        
+        <div class="settings-group">
+          <label for="ad-footer" style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; display: block; font-size: 0.95rem;">Footer Ad Script (renders above the footer layout)</label>
+          <textarea id="ad-footer" class="pane-textarea mono" style="min-height: 100px; font-size: 0.85rem;" placeholder="Paste footer ad HTML/JS code here..."><%= globalSettings.ad_footer || '' %></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="align-self: flex-start; min-width: 150px;">Save Ads Configuration</button>
+      </form>
+    </div>
+
     <!-- DANGER ZONE -->
     <h3 class="settings-section-title">System Actions</h3>
-    <div class="card danger-card">
+    <div class="card danger-card" style="margin-bottom: 2.5rem;">
       <h3>Danger Zone</h3>
       <p class="card-desc">Irreversible administrative parameters and analytics wipes.</p>
       <div class="danger-row">
@@ -149,10 +173,73 @@
   </div>
 </main>
 
+<!-- Tool Editor Modal -->
+<div id="tool-edit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+  <div class="modal-content card" style="width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; position: relative; border: 1px solid var(--card-border);">
+    <button id="modal-close" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.5rem;">&times;</button>
+    <h3 style="margin-top: 0; font-family: var(--font-heading);" id="modal-tool-name">Edit Tool Settings</h3>
+    
+    <input type="hidden" id="modal-tool-key">
+
+    <!-- SEO Meta Fields -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <div class="settings-group">
+        <label for="edit-seo-title">Meta Title</label>
+        <input type="text" id="edit-seo-title" class="styled-input" style="width: 100%;">
+      </div>
+      <div class="settings-group">
+        <label for="edit-name">Tool Name (Display)</label>
+        <input type="text" id="edit-name" class="styled-input" style="width: 100%;">
+      </div>
+    </div>
+    
+    <div class="settings-group">
+      <label for="edit-seo-desc">Meta Description</label>
+      <textarea id="edit-seo-desc" class="pane-textarea" style="min-height: 60px; font-size: 0.85rem; width: 100%;"></textarea>
+    </div>
+
+    <!-- Dual Paragraph Editor -->
+    <div class="settings-group">
+      <label for="edit-desc-top">Top Paragraph (HTML/Markdown support)</label>
+      <textarea id="edit-desc-top" class="pane-textarea" style="min-height: 100px; font-size: 0.85rem; width: 100%;"></textarea>
+    </div>
+    
+    <div class="settings-group">
+      <label for="edit-desc-bottom">Bottom Paragraph (HTML/Markdown support)</label>
+      <textarea id="edit-desc-bottom" class="pane-textarea" style="min-height: 100px; font-size: 0.85rem; width: 100%;"></textarea>
+    </div>
+
+    <!-- Ad Units Integration -->
+    <h4 style="margin: 0.5rem 0 0 0; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-heading);">Ad Integration Codes (HTML/JS)</h4>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+      <div class="settings-group">
+        <label for="edit-ad-top">Ad Top Slot</label>
+        <textarea id="edit-ad-top" class="pane-textarea mono" style="min-height: 80px; font-size: 0.75rem; font-family: var(--font-mono); width: 100%;" placeholder="Paste ad code here"></textarea>
+      </div>
+      <div class="settings-group">
+        <label for="edit-ad-bottom">Ad Bottom Slot</label>
+        <textarea id="edit-ad-bottom" class="pane-textarea mono" style="min-height: 80px; font-size: 0.75rem; font-family: var(--font-mono); width: 100%;" placeholder="Paste ad code here"></textarea>
+      </div>
+      <div class="settings-group">
+        <label for="edit-ad-sidebar">Ad Sidebar Slot</label>
+        <textarea id="edit-ad-sidebar" class="pane-textarea mono" style="min-height: 80px; font-size: 0.75rem; font-family: var(--font-mono); width: 100%;" placeholder="Paste ad code here"></textarea>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem;">
+      <button class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
+      <button class="btn btn-primary" id="modal-save-btn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast-container" id="toast-container"></div>
 
 <!-- Admin panel interactions AJAX scripts -->
 <script>
+  // Serialize all tools data to allow modal to read values instantly
+  window.toolsData = <%- JSON.stringify(tools) %>;
+
   // Toast Helper
   function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
@@ -175,38 +262,89 @@
     }, 3000);
   }
 
-  // 1. Hook up Inline CMS Save on Blur / Enter key
-  document.querySelectorAll('.admin-table tbody tr').forEach(row => {
-    const toolKey = row.getAttribute('data-tool-key');
-    const inputs = row.querySelectorAll('.inline-edit-input');
-    
-    inputs.forEach(input => {
-      input.addEventListener('change', async () => {
-        const payload = {
-          tool_key: toolKey,
-          name: row.querySelector('.txt-name').value,
-          seo_title: row.querySelector('.txt-seo-title').value,
-          seo_meta_desc: row.querySelector('.txt-seo-desc').value,
-          desc: row.querySelector('.txt-desc').value
-        };
-        
-        try {
-          const res = await fetch('/api/admin/tools/update', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          const data = await res.json();
-          if (data.success) {
-            showToast('Changes saved to database!', 'success');
-          } else {
-            showToast('Save failed: ' + data.error, 'danger');
-          }
-        } catch (err) {
-          showToast('Failed to connect to backend API', 'danger');
-        }
-      });
+  // Edit Tool Modal logic
+  const editModal = document.getElementById('tool-edit-modal');
+  const modalToolKey = document.getElementById('modal-tool-key');
+  const modalToolName = document.getElementById('modal-tool-name');
+  const editName = document.getElementById('edit-name');
+  const editSeoTitle = document.getElementById('edit-seo-title');
+  const editSeoDesc = document.getElementById('edit-seo-desc');
+  const editDescTop = document.getElementById('edit-desc-top');
+  const editDescBottom = document.getElementById('edit-desc-bottom');
+  const editAdTop = document.getElementById('edit-ad-top');
+  const editAdBottom = document.getElementById('edit-ad-bottom');
+  const editAdSidebar = document.getElementById('edit-ad-sidebar');
+
+  document.querySelectorAll('.btn-edit-tool').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const toolKey = e.target.getAttribute('data-tool-key');
+      const tool = window.toolsData.find(t => t.tool_key === toolKey);
+      if (!tool) return;
+
+      modalToolKey.value = tool.tool_key;
+      modalToolName.textContent = `Edit Tool: ${tool.name}`;
+      editName.value = tool.name;
+      editSeoTitle.value = tool.seo_title || '';
+      editSeoDesc.value = tool.seo_meta_desc || '';
+      editDescTop.value = tool.description_top || '';
+      editDescBottom.value = tool.description_bottom || '';
+      editAdTop.value = tool.ad_top || '';
+      editAdBottom.value = tool.ad_bottom || '';
+      editAdSidebar.value = tool.ad_sidebar || '';
+
+      editModal.style.setProperty('display', 'flex', 'important');
     });
+  });
+
+  const closeModal = () => {
+    editModal.style.setProperty('display', 'none', 'important');
+  };
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-cancel-btn').addEventListener('click', closeModal);
+
+  document.getElementById('modal-save-btn').addEventListener('click', async () => {
+    const toolKey = modalToolKey.value;
+    const payload = {
+      tool_key: toolKey,
+      name: editName.value,
+      seo_title: editSeoTitle.value,
+      seo_meta_desc: editSeoDesc.value,
+      description_top: editDescTop.value,
+      description_bottom: editDescBottom.value,
+      ad_top: editAdTop.value,
+      ad_bottom: editAdBottom.value,
+      ad_sidebar: editAdSidebar.value
+    };
+
+    try {
+      const res = await fetch('/api/admin/tools/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Changes saved to database!', 'success');
+        
+        // Update local window.toolsData
+        const idx = window.toolsData.findIndex(t => t.tool_key === toolKey);
+        if (idx !== -1) {
+          window.toolsData[idx] = { ...window.toolsData[idx], ...payload };
+          
+          // Update the table row display name dynamically
+          const row = document.querySelector(`tr[data-tool-key="${toolKey}"]`);
+          if (row) {
+            row.querySelector('.bold').textContent = payload.name;
+          }
+        }
+        closeModal();
+      } else {
+        showToast('Save failed: ' + data.error, 'danger');
+      }
+    } catch (err) {
+      showToast('Failed to save settings: ' + err.message, 'danger');
+    }
   });
 
   // 2. Hook up Tool Active State Toggle
@@ -319,6 +457,35 @@
         }
       } catch (err) {
         showToast('Wipe error', 'danger');
+      }
+    });
+  }
+
+  // 6. Ads Form settings submit handler
+  const adsForm = document.getElementById('ads-config-form');
+  if (adsForm) {
+    adsForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        ad_header: document.getElementById('ad-header').value,
+        ad_sidebar: document.getElementById('ad-sidebar').value,
+        ad_footer: document.getElementById('ad-footer').value
+      };
+      
+      try {
+        const res = await fetch('/api/admin/settings/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Ads configuration saved successfully!', 'success');
+        } else {
+          showToast('Failed to save ads configuration: ' + data.error, 'danger');
+        }
+      } catch (err) {
+        showToast('Error saving configuration: ' + err.message, 'danger');
       }
     });
   }
