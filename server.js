@@ -66,6 +66,10 @@ async function connectDatabase() {
     dbConnected = true;
     dbError = null;
     console.log('Database connected successfully.');
+    
+    // Automatically disable the removed frequency-generator tool in the database
+    await pool.query("UPDATE tools SET enabled = 0 WHERE tool_key = 'frequency-generator'");
+    console.log('Successfully disabled frequency-generator in database.');
   } catch (error) {
     dbConnected = false;
     dbError = error.message;

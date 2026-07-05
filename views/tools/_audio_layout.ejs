@@ -1,4 +1,4 @@
-<% const isGenerator = ['blank-mp3', 'white-noise', 'frequency-generator', 'metronome', 'text-to-mp3'].includes(tool.tool_key); %>
+<% const isGenerator = ['blank-mp3', 'white-noise', 'metronome', 'text-to-mp3'].includes(tool.tool_key); %>
 
 <div class="audio-workbench" data-tool-key="<%= tool.tool_key %>" data-tool-category="<%= tool.category %>">
 
@@ -454,24 +454,7 @@
             <label class="ctrl-label" style="display:flex; justify-content:space-between;"><span>Duration (s)</span><span id="val-noise-duration" style="font-family:var(--font-mono);">5.0s</span></label>
             <input type="range" id="noise-duration" class="styled-slider" min="1" max="60" step="1" value="5" style="margin-top:0.5rem; width:100%;">
           </div>
-        <% } else if (tool.tool_key === 'frequency-generator') { %>
-          <div class="ctrl-group">
-            <label class="ctrl-label">Wave Form</label>
-            <select id="wave-type" class="styled-select">
-              <option value="sine">Sine Wave (Pure Tone)</option>
-              <option value="square">Square Wave (Retro)</option>
-              <option value="triangle">Triangle Wave (Soft)</option>
-              <option value="sawtooth">Sawtooth Wave (Buzz)</option>
-            </select>
-          </div>
-          <div class="ctrl-group" style="margin-top:1rem;">
-            <label class="ctrl-label" style="display:flex; justify-content:space-between;"><span>Frequency (Hz)</span><span id="val-wave-freq" style="font-family:var(--font-mono);">440 Hz</span></label>
-            <input type="range" id="wave-freq" class="styled-slider" min="100" max="2000" step="5" value="440" style="margin-top:0.5rem; width:100%;">
-          </div>
-          <div class="ctrl-group" style="margin-top:1rem;">
-            <label class="ctrl-label" style="display:flex; justify-content:space-between;"><span>Tone Duration (s)</span><span id="val-freq-duration" style="font-family:var(--font-mono);">5.0s</span></label>
-            <input type="range" id="freq-duration" class="styled-slider" min="1" max="60" step="1" value="5" style="margin-top:0.5rem; width:100%;">
-          </div>
+
         <% } else if (tool.tool_key === 'metronome') { %>
           <div class="ctrl-group">
             <label class="ctrl-label" style="display:flex; justify-content:space-between;"><span>Tempo (BPM)</span><span id="val-metronome-bpm" style="font-family:var(--font-mono);">120 BPM</span></label>

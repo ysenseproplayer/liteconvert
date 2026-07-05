@@ -8,7 +8,7 @@ export async function initAudioTool() {
 
   const toolKey = workbench.getAttribute('data-tool-key');
   const toolCat = workbench.getAttribute('data-tool-category');
-  const isGenerator = ['blank-mp3', 'white-noise', 'frequency-generator', 'metronome', 'text-to-mp3'].includes(toolKey);
+  const isGenerator = ['blank-mp3', 'white-noise', 'metronome', 'text-to-mp3'].includes(toolKey);
 
   // HTML elements
   const dropZone = document.getElementById('drop-zone');
@@ -406,7 +406,6 @@ export async function initAudioTool() {
     let dur = 0;
     if (toolKey === 'blank-mp3' && sliders['blank-duration']) dur = parseInt(sliders['blank-duration'].value);
     else if (toolKey === 'white-noise' && sliders['noise-duration']) dur = parseInt(sliders['noise-duration'].value);
-    else if (toolKey === 'frequency-generator' && sliders['freq-duration']) dur = parseInt(sliders['freq-duration'].value);
     else if (toolKey === 'metronome' && sliders['metronome-duration']) dur = parseInt(sliders['metronome-duration'].value);
     
     if (dur > 0 && fileDurationLabel) {
@@ -416,7 +415,7 @@ export async function initAudioTool() {
 
   if (isGenerator) {
     updateGeneratorDurationLabel();
-    ['blank-duration', 'noise-duration', 'freq-duration', 'metronome-duration'].forEach(key => {
+    ['blank-duration', 'noise-duration', 'metronome-duration'].forEach(key => {
       const el = sliders[key];
       if (el) {
         el.addEventListener('change', updateGeneratorDurationLabel);
@@ -1138,21 +1137,7 @@ export async function initAudioTool() {
       return await ctx.startRendering();
     }
     
-    if (toolKey === 'frequency-generator') {
-      const freq = parseFloat(sliders['wave-freq'].value || 440);
-      const waveType = document.getElementById('wave-type').value;
-      const duration = parseFloat(sliders['freq-duration'].value || 5);
-      const ctx = new OfflineAudioContext(1, sampleRate * duration, sampleRate);
-      
-      const osc = ctx.createOscillator();
-      osc.type = waveType;
-      osc.frequency.setValueAtTime(freq, 0);
-      
-      osc.connect(ctx.destination);
-      osc.start();
-      osc.stop(duration);
-      return await ctx.startRendering();
-    }
+
 
     if (toolKey === 'white-noise') {
       const type = document.getElementById('noise-color').value;

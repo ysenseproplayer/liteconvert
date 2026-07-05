@@ -1,1 +1,96 @@
-<%- include('_audio_layout') %>
+<div class="audio-workbench" data-tool-key="<%= tool.tool_key %>" data-tool-category="<%= tool.category %>">
+
+  <!-- TOOL HERO HEADER -->
+  <div class="tool-hero">
+    <div class="tool-hero-icon">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+      </svg>
+    </div>
+    <div class="tool-hero-text">
+      <p class="tool-hero-desc"><%= tool.intro_paragraph || tool.page_description %></p>
+    </div>
+    <div class="tool-hero-badges">
+      <span class="hero-badge"><svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg> 100% Free</span>
+      <span class="hero-badge"><svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg> Privacy Safe</span>
+      <span class="hero-badge"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg> Browser-Side</span>
+    </div>
+  </div>
+
+  <div style="max-width: 680px; margin: 0 auto;">
+
+    <!-- UPLOAD -->
+    <div class="tool-panel" id="rev-upload-card" style="margin-bottom: 1.5rem;">
+      <div class="panel-label">Upload Audio File</div>
+      <div class="cv-dropzone" id="rev-drop-zone" style="margin-top: 0.75rem;">
+        <input type="file" id="rev-file-input" style="display:none;" accept="audio/*,video/*">
+        <div class="cv-dropzone-icon">
+          <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
+        </div>
+        <div class="cv-dropzone-text">
+          <strong>Drop an audio file here or click to upload</strong>
+          <span>MP3 · WAV · FLAC · OGG · M4A · AAC · AIFF · WEBM</span>
+        </div>
+        <div class="cv-dropzone-btn">Choose File</div>
+      </div>
+    </div>
+
+    <!-- AUDIO PREVIEW (shown after upload) -->
+    <div class="tool-panel hidden" id="rev-preview-card" style="margin-bottom: 1.5rem;">
+      <div class="panel-label" style="display: flex; align-items: center; gap: 0.5rem;">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z"/></svg>
+        AUDIO PREVIEW
+      </div>
+      <div style="margin-top: 0.75rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span id="rev-file-name" style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary); word-break: break-all;"></span>
+          <span id="rev-duration" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted);">0:00 / 0:00</span>
+        </div>
+        <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.75rem; position: relative;">
+          <canvas id="rev-waveform-canvas" height="80" style="width:100%; height:80px; display:block;"></canvas>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem;">
+          <button id="rev-btn-play" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-primary); padding: 0.45rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" id="rev-play-icon"><path d="M8 5v14l11-7z" /></svg>
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" id="rev-pause-icon" class="hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
+            <span id="rev-play-label">Play</span>
+          </button>
+          <button id="rev-btn-new-file" class="ctrl-btn-mini">
+            <svg width="10" height="10" fill="currentColor" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            <span>New File</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVERSE BUTTON -->
+    <div class="hidden" id="rev-action-area" style="margin-bottom: 1.5rem;">
+      <button id="rev-btn-process" class="btn-main-action" style="width: 100%; padding: 1rem; font-size: 1.05rem;">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
+        Reverse Audio
+      </button>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="tool-panel hidden" id="rev-progress-card" style="text-align: center; padding: 2rem; margin-bottom: 1.5rem;">
+      <div id="rev-progress-status" style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">Reversing audio...</div>
+      <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+        <div id="rev-progress-bar" style="width: 0%; height: 100%; background: var(--accent-gradient); border-radius: 3px; transition: width 0.3s;"></div>
+      </div>
+    </div>
+
+    <!-- DOWNLOAD -->
+    <div class="tool-panel hidden" id="rev-download-card" style="text-align: center; padding: 2rem; border: 1px solid rgba(16,185,129,0.2); background: rgba(16,185,129,0.02);">
+      <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color:var(--success); margin: 0 auto 1rem; display:block;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Audio Reversed!</h3>
+      <p id="rev-download-info" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">—</p>
+      <a id="rev-download-link" href="" download class="btn-download" style="display: inline-flex;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+        Download Reversed Audio
+      </a>
+      <br>
+      <button id="rev-btn-another" class="ctrl-btn-mini" style="margin-top: 1rem;">Reverse Another File</button>
+    </div>
+
+  </div>
+</div>

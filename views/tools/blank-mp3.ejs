@@ -1,1 +1,81 @@
-<%- include('_audio_layout') %>
+<div class="audio-workbench" data-tool-key="<%= tool.tool_key %>" data-tool-category="<%= tool.category %>">
+
+  <!-- TOOL HERO HEADER -->
+  <div class="tool-hero">
+    <div class="tool-hero-icon">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    </div>
+    <div class="tool-hero-text">
+      <p class="tool-hero-desc"><%= tool.intro_paragraph || tool.page_description %></p>
+    </div>
+    <div class="tool-hero-badges">
+      <span class="hero-badge">100% Free</span>
+      <span class="hero-badge">Privacy Safe</span>
+      <span class="hero-badge">Browser-Side</span>
+    </div>
+  </div>
+
+  <div style="max-width: 600px; margin: 0 auto;">
+
+    <!-- GENERATOR PANEL -->
+    <div class="tool-panel" id="blk-generator-card" style="margin-bottom: 1.5rem; padding: 2rem;">
+      <div class="panel-label" style="margin-bottom: 1.5rem;">Configure Blank MP3 Settings</div>
+      
+      <!-- Duration selection -->
+      <div style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span class="ctrl-label" style="margin: 0;">Silence Duration</span>
+          <span id="blk-duration-val" style="font-family: var(--font-mono); font-size: 1.05rem; color: var(--accent-primary); font-weight: bold;">10s</span>
+        </div>
+        <input type="range" id="blk-duration-slider" class="styled-slider" min="1" max="600" step="1" value="10" style="width: 100%; margin-bottom: 0.75rem;">
+        
+        <!-- Presets -->
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="cv-pill blk-preset" data-val="5">5s</button>
+          <button class="cv-pill active blk-preset" data-val="10">10s</button>
+          <button class="cv-pill blk-preset" data-val="30">30s</button>
+          <button class="cv-pill blk-preset" data-val="60">1 min</button>
+          <button class="cv-pill blk-preset" data-val="300">5 min</button>
+        </div>
+      </div>
+
+      <!-- Format selector -->
+      <div style="margin-bottom: 2rem;">
+        <label class="ctrl-label" style="margin-bottom: 0.5rem;">Output Format</label>
+        <select id="blk-format" class="styled-select" style="max-width: 160px; display: block;">
+          <option value="mp3">MP3 File</option>
+          <option value="wav">WAV (Lossless)</option>
+        </select>
+      </div>
+
+      <!-- Action Button -->
+      <button id="blk-btn-generate" class="btn-main-action" style="width: 100%; padding: 0.9rem; font-weight: 700;">
+        ⚙ Generate Silent Audio
+      </button>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="tool-panel hidden" id="blk-progress-card" style="text-align: center; padding: 2rem; margin-bottom: 1.5rem;">
+      <div id="blk-progress-status" style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">Synthesizing silence...</div>
+      <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+        <div id="blk-progress-bar" style="width: 0%; height: 100%; background: var(--accent-gradient); border-radius: 3px; transition: width 0.3s;"></div>
+      </div>
+    </div>
+
+    <!-- DOWNLOAD CARD -->
+    <div class="tool-panel hidden" id="blk-download-card" style="text-align: center; padding: 2.2rem; border: 1px solid rgba(0, 242, 254, 0.3); background: rgba(0, 242, 254, 0.01);">
+      <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color:var(--accent-primary); margin: 0 auto 1rem; display:block;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Silence Generated!</h3>
+      <p id="blk-download-info" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">—</p>
+      <a id="blk-download-link" href="" download class="btn-download" style="display: inline-flex;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+        Download File
+      </a>
+      <br>
+      <button id="blk-btn-reset" class="ctrl-btn-mini" style="margin-top: 1rem;">Generate Another</button>
+    </div>
+
+  </div>
+</div>
