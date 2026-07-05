@@ -67,9 +67,31 @@ async function connectDatabase() {
     dbError = null;
     console.log('Database connected successfully.');
     
-    // Automatically disable the removed frequency-generator tool in the database
-    await pool.query("UPDATE tools SET enabled = 0 WHERE tool_key = 'frequency-generator'");
-    console.log('Successfully disabled frequency-generator in database.');
+    // Ensure all custom CMS fields exist in database
+    const columnsToEnsure = [
+      { name: 'status', type: "VARCHAR(20) DEFAULT 'active'" },
+      { name: 'description_top', type: 'TEXT NULL' },
+      { name: 'description_bottom', type: 'TEXT NULL' },
+      { name: 'ad_top', type: 'TEXT NULL' },
+      { name: 'ad_bottom', type: 'TEXT NULL' },
+      { name: 'ad_sidebar', type: 'TEXT NULL' },
+      { name: 'bullet_points', type: 'TEXT NULL' },
+      { name: 'image_path', type: 'VARCHAR(255) NULL' }
+    ];
+    for (const col of columnsToEnsure) {
+      try {
+        await pool.query(`ALTER TABLE tools ADD COLUMN ${col.name} ${col.type}`);
+        console.log(`Column ${col.name} verified/added.`);
+      } catch (err) {
+        if (err.code !== 'ER_DUP_FIELDNAME') {
+          console.warn(`Altering column ${col.name} warned:`, err.message);
+        }
+      }
+    }
+    
+    // Automatically disable removed tools in the database
+    await pool.query("UPDATE tools SET enabled = 0 WHERE tool_key IN ('frequency-generator', 'audio-enhancer')");
+    console.log('Successfully disabled removed tools in database.');
   } catch (error) {
     dbConnected = false;
     dbError = error.message;
@@ -230,8 +252,33 @@ app.get('/tool/:key', async (req, res) => {
     }
     
     const tool = toolRows[0];
-    if (!tool.enabled) {
-      return res.render('blocked', { toolName: tool.name });
+    const status = tool.status || 'active';
+    
+    if (!tool.enabled || status === 'disabled') {
+      return res.render('blocked', { 
+        toolName: tool.name, 
+        mode: 'disabled',
+        title: 'Tool Access Restricted',
+        message: `The tool "${tool.name}" has been disabled by the system administrator.`
+      });
+    }
+    
+    if (status === 'maintenance') {
+      return res.render('blocked', { 
+        toolName: tool.name, 
+        mode: 'maintenance',
+        title: 'Under Maintenance',
+        message: `The tool "${tool.name}" is currently undergoing scheduled maintenance. Please check back shortly.`
+      });
+    }
+    
+    if (status === 'coming_soon') {
+      return res.render('blocked', { 
+        toolName: tool.name, 
+        mode: 'coming_soon',
+        title: 'Coming Soon',
+        message: `The tool "${tool.name}" is under development and will be available very soon!`
+      });
     }
     
     // Fetch FAQs for this tool
@@ -328,15 +375,64 @@ app.get('/admin', requireAdmin, async (req, res) => {
 
 // Update Tool Details CMS
 app.post('/api/admin/tools/update', requireAdmin, async (req, res) => {
-  const { tool_key, name, seo_title, seo_meta_desc, description_top, description_bottom, ad_top, ad_bottom, ad_sidebar } = req.body;
+  const { 
+    tool_key, name, seo_title, seo_meta_desc, 
+    description_top, description_bottom, 
+    ad_top, ad_bottom, ad_sidebar,
+    status, bullet_points, image_path,
+    faqs 
+  } = req.body;
+  
+  const connection = await pool.getConnection();
   try {
-    await pool.query(
-      'UPDATE tools SET name = ?, seo_title = ?, seo_meta_desc = ?, description_top = ?, description_bottom = ?, ad_top = ?, ad_bottom = ?, ad_sidebar = ? WHERE tool_key = ?',
-      [name, seo_title, seo_meta_desc, description_top, description_bottom, ad_top, ad_bottom, ad_sidebar, tool_key]
+    await connection.beginTransaction();
+    
+    // Get tool ID
+    const [toolRows] = await connection.query('SELECT id FROM tools WHERE tool_key = ?', [tool_key]);
+    if (toolRows.length === 0) throw new Error('Tool not found');
+    const toolId = toolRows[0].id;
+    
+    // Update tools table
+    await connection.query(
+      'UPDATE tools SET name = ?, seo_title = ?, seo_meta_desc = ?, description_top = ?, description_bottom = ?, ad_top = ?, ad_bottom = ?, ad_sidebar = ?, status = ?, bullet_points = ?, image_path = ? WHERE id = ?',
+      [name, seo_title, seo_meta_desc, description_top, description_bottom, ad_top, ad_bottom, ad_sidebar, status || 'active', bullet_points, image_path, toolId]
     );
+    
+    // Sync FAQs
+    // 1. Get existing FAQ IDs for this tool
+    const [existingFaqRows] = await connection.query('SELECT id FROM faqs WHERE tool_id = ?', [toolId]);
+    const existingIds = existingFaqRows.map(r => r.id);
+    
+    // 2. Insert or Update passed FAQs
+    const passedIds = [];
+    if (faqs && Array.isArray(faqs)) {
+      for (const faq of faqs) {
+        const faqId = faq.id ? Number(faq.id) : null;
+        if (faqId && existingIds.includes(faqId)) {
+          // Update
+          await connection.query('UPDATE faqs SET question = ?, answer = ? WHERE id = ?', [faq.question, faq.answer, faqId]);
+          passedIds.push(faqId);
+        } else if (faq.question.trim() !== '' && faq.answer.trim() !== '') {
+          // Insert
+          const [insResult] = await connection.query('INSERT INTO faqs (tool_id, question, answer) VALUES (?, ?, ?)', [toolId, faq.question, faq.answer]);
+          passedIds.push(insResult.insertId);
+        }
+      }
+    }
+    
+    // 3. Delete FAQs that were not passed
+    const idsToDelete = existingIds.filter(id => !passedIds.includes(id));
+    if (idsToDelete.length > 0) {
+      await connection.query('DELETE FROM faqs WHERE id IN (?)', [idsToDelete]);
+    }
+    
+    await connection.commit();
     res.json({ success: true });
   } catch (err) {
+    await connection.rollback();
     res.status(500).json({ error: err.message });
+  } finally {
+    connection.release();
   }
 });
 

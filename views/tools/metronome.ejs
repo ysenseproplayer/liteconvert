@@ -1,1 +1,93 @@
-<%- include('_audio_layout') %>
+<div class="audio-workbench" data-tool-key="<%= tool.tool_key %>" data-tool-category="<%= tool.category %>">
+
+  <!-- TOOL HERO HEADER -->
+  <div class="tool-hero">
+    <div class="tool-hero-icon">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <div class="tool-hero-text">
+      <p class="tool-hero-desc"><%= tool.intro_paragraph || tool.page_description %></p>
+    </div>
+    <div class="tool-hero-badges">
+      <span class="hero-badge">100% Free</span>
+      <span class="hero-badge">Privacy Safe</span>
+      <span class="hero-badge">Browser-Side</span>
+    </div>
+  </div>
+
+  <div style="max-width: 680px; margin: 0 auto;">
+
+    <!-- CONFIGURATION CARD -->
+    <div class="tool-panel" id="met-config-card" style="margin-bottom: 1.5rem; padding: 2rem;">
+      <div class="panel-label" style="margin-bottom: 1.5rem;">Create Your Click Track</div>
+      
+      <!-- Input Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+        <div class="settings-group">
+          <label class="ctrl-label" for="met-bpm">Tempo (BPM)</label>
+          <input type="number" id="met-bpm" class="styled-input" min="40" max="300" value="120" style="width: 100%;">
+        </div>
+        <div class="settings-group">
+          <label class="ctrl-label" for="met-signature">Time Signature</label>
+          <select id="met-signature" class="styled-select" style="width: 100%;">
+            <option value="4/4">4/4</option>
+            <option value="3/4">3/4</option>
+            <option value="6/8">6/8</option>
+            <option value="none">No Time Signature</option>
+          </select>
+        </div>
+        <div class="settings-group">
+          <label class="ctrl-label" for="met-sound">Click Sound</label>
+          <select id="met-sound" class="styled-select" style="width: 100%;">
+            <option value="classic">Classic Click</option>
+            <option value="digital">Digital Beep</option>
+            <option value="woodblock">Woodblock</option>
+          </select>
+        </div>
+        <div class="settings-group">
+          <label class="ctrl-label" for="met-measures">Number of Measures</label>
+          <input type="number" id="met-measures" class="styled-input" min="1" max="500" value="4" style="width: 100%;">
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <button id="met-btn-generate" class="btn-main-action" style="width: 100%; padding: 0.9rem; font-weight: 700;">
+        Generate Click Track
+      </button>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="tool-panel hidden" id="met-progress-card" style="text-align: center; padding: 2rem; margin-bottom: 1.5rem;">
+      <div id="met-progress-status" style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">Generating click track...</div>
+      <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+        <div id="met-progress-bar" style="width: 0%; height: 100%; background: var(--accent-gradient); border-radius: 3px; transition: width 0.3s;"></div>
+      </div>
+    </div>
+
+    <!-- PREVIEW & DOWNLOAD CARD -->
+    <div class="tool-panel hidden" id="met-download-card" style="text-align: center; padding: 2.2rem; border: 1px solid rgba(0, 242, 254, 0.3); background: rgba(0, 242, 254, 0.01);">
+      <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color:var(--accent-primary); margin: 0 auto 1rem; display:block;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Click Track Ready!</h3>
+      <p id="met-download-info" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">—</p>
+      
+      <!-- Preview Playback -->
+      <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 0.75rem;">
+        <button id="met-btn-play" style="background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); color: var(--text-primary); padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem;">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" id="met-play-icon"><path d="M8 5v14l11-7z" /></svg>
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" id="met-pause-icon" class="hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
+          <span id="met-play-label">Preview Click</span>
+        </button>
+      </div>
+
+      <a id="met-download-link" href="" download class="btn-download" style="display: inline-flex;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+        Download WAV Click Track
+      </a>
+      <br>
+      <button id="met-btn-reset" class="ctrl-btn-mini" style="margin-top: 1rem;">Generate Another</button>
+    </div>
+
+  </div>
+</div>

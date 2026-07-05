@@ -996,21 +996,7 @@ export async function initAudioTool() {
       lastNode = hpFilter;
     }
 
-    // Audio Enhancer (brightness + warmth combined)
-    if (toolKey === 'audio-enhancer') {
-      const brightFilter = offlineCtx.createBiquadFilter();
-      brightFilter.type = 'highshelf';
-      brightFilter.frequency.setValueAtTime(6000, 0);
-      brightFilter.gain.setValueAtTime(5, 0);
-      const warmFilter = offlineCtx.createBiquadFilter();
-      warmFilter.type = 'peaking';
-      warmFilter.frequency.setValueAtTime(200, 0);
-      warmFilter.gain.setValueAtTime(3, 0);
-      warmFilter.Q.setValueAtTime(1, 0);
-      lastNode.connect(brightFilter);
-      brightFilter.connect(warmFilter);
-      lastNode = warmFilter;
-    }
+
 
     // MP3 to MIDI (approximation: resonant sweep for creative effect)
     if (toolKey === 'mp3-midi') {

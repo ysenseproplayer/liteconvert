@@ -88,10 +88,29 @@
     <% } %>
 
     <!-- DESCRIPTION BOTTOM PARAGRAPH -->
-    <% if (tool.description_bottom && tool.description_bottom.trim() !== '') { %>
+    <% if ((tool.description_bottom && tool.description_bottom.trim() !== '') || (tool.bullet_points && tool.bullet_points.trim() !== '') || (tool.image_path && tool.image_path.trim() !== '')) { %>
       <div class="premium-card about-paragraph-card" style="margin-bottom: 2.5rem; line-height: 1.7;">
-        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: var(--text-primary); margin-bottom: 1rem;">About <%= tool.name %></h3>
-        <p style="color: var(--text-secondary); font-size: 0.95rem; margin: 0;"><%= tool.description_bottom %></p>
+        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: var(--text-primary); margin-bottom: 1.25rem;">About <%= tool.name %></h3>
+        
+        <% if (tool.image_path && tool.image_path.trim() !== '') { %>
+          <div style="margin-bottom: 1.5rem; text-align: center;">
+            <img src="<%= tool.image_path %>" alt="<%= tool.name %>" style="max-width: 100%; border-radius: 12px; border: 1px solid var(--card-border); max-height: 380px; object-fit: contain;">
+          </div>
+        <% } %>
+        
+        <% if (tool.description_bottom && tool.description_bottom.trim() !== '') { %>
+          <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem;"><%= tool.description_bottom %></p>
+        <% } %>
+        
+        <% if (tool.bullet_points && tool.bullet_points.trim() !== '') { %>
+          <ul style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0 0 0;">
+            <% tool.bullet_points.split('\n').forEach(point => { %>
+              <% if (point.trim() !== '') { %>
+                <li><%= point.trim() %></li>
+              <% } %>
+            <% }); %>
+          </ul>
+        <% } %>
       </div>
     <% } %>
 

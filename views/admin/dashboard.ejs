@@ -174,7 +174,7 @@
 
 <!-- Tool Editor Modal -->
 <div id="tool-edit-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-  <div class="modal-content card" style="width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; position: relative; border: 1px solid var(--card-border);">
+  <div class="modal-content card" style="width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; position: relative; border: 1px solid var(--card-border); background-color: #0b0f19;">
     <button id="modal-close" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.5rem;">&times;</button>
     <h3 style="margin-top: 0; font-family: var(--font-heading);" id="modal-tool-name">Edit Tool Settings</h3>
     
@@ -192,20 +192,43 @@
       </div>
     </div>
     
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <div class="settings-group">
+        <label for="edit-status">Status Mode</label>
+        <select id="edit-status" class="styled-select" style="width: 100%;">
+          <option value="active">Active Mode (Online)</option>
+          <option value="maintenance">Maintenance Mode</option>
+          <option value="coming_soon">Coming Soon Mode</option>
+          <option value="disabled">Disabled (Restricted)</option>
+        </select>
+      </div>
+      <div class="settings-group">
+        <label for="edit-image-path">Image Path / URL</label>
+        <input type="text" id="edit-image-path" class="styled-input" style="width: 100%;" placeholder="e.g. /images/tools/mp3-cutter.png">
+      </div>
+    </div>
+
     <div class="settings-group">
       <label for="edit-seo-desc">Meta Description</label>
       <textarea id="edit-seo-desc" class="pane-textarea" style="min-height: 60px; font-size: 0.85rem; width: 100%;"></textarea>
     </div>
 
     <!-- Dual Paragraph Editor -->
-    <div class="settings-group">
-      <label for="edit-desc-top">Top Paragraph (HTML/Markdown support)</label>
-      <textarea id="edit-desc-top" class="pane-textarea" style="min-height: 100px; font-size: 0.85rem; width: 100%;"></textarea>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <div class="settings-group">
+        <label for="edit-desc-top">Top Paragraph (Intro block)</label>
+        <textarea id="edit-desc-top" class="pane-textarea" style="min-height: 100px; font-size: 0.85rem; width: 100%;"></textarea>
+      </div>
+      <div class="settings-group">
+        <label for="edit-desc-bottom">Bottom Paragraph (About section)</label>
+        <textarea id="edit-desc-bottom" class="pane-textarea" style="min-height: 100px; font-size: 0.85rem; width: 100%;"></textarea>
+      </div>
     </div>
-    
+
+    <!-- Bullet Points -->
     <div class="settings-group">
-      <label for="edit-desc-bottom">Bottom Paragraph (HTML/Markdown support)</label>
-      <textarea id="edit-desc-bottom" class="pane-textarea" style="min-height: 100px; font-size: 0.85rem; width: 100%;"></textarea>
+      <label for="edit-bullet-points">Bullet Points (One bullet point per line)</label>
+      <textarea id="edit-bullet-points" class="pane-textarea" style="min-height: 80px; font-size: 0.85rem; width: 100%;" placeholder="Point 1&#10;Point 2&#10;Point 3"></textarea>
     </div>
 
     <!-- Ad Units Integration -->
@@ -225,6 +248,15 @@
       </div>
     </div>
 
+    <!-- Tool FAQs -->
+    <h4 style="margin: 0.5rem 0 0 0; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-heading);">Edit Tool FAQs</h4>
+    <div class="settings-group">
+      <div id="modal-faqs-list" style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(0,0,0,0.18); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; max-height: 220px; overflow-y: auto;">
+        <!-- Dynamic FAQs loaded here -->
+      </div>
+      <button id="modal-add-faq-btn" class="btn btn-secondary" style="margin-top: 0.75rem; padding: 0.35rem 0.75rem; font-size: 0.8rem; align-self: flex-start;">+ Add FAQ Item</button>
+    </div>
+
     <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem;">
       <button class="btn btn-secondary" id="modal-cancel-btn">Cancel</button>
       <button class="btn btn-primary" id="modal-save-btn">Save Changes</button>
@@ -238,6 +270,7 @@
 <script>
   // Serialize all tools data to allow modal to read values instantly
   window.toolsData = <%- JSON.stringify(tools) %>;
+  window.faqsData = <%- JSON.stringify(faqs) %>;
 
   // Toast Helper
   function showToast(message, type = 'info') {
@@ -273,6 +306,37 @@
   const editAdTop = document.getElementById('edit-ad-top');
   const editAdBottom = document.getElementById('edit-ad-bottom');
   const editAdSidebar = document.getElementById('edit-ad-sidebar');
+  const editStatus = document.getElementById('edit-status');
+  const editImagePath = document.getElementById('edit-image-path');
+  const editBulletPoints = document.getElementById('edit-bullet-points');
+  const modalFaqsList = document.getElementById('modal-faqs-list');
+
+  // FAQ Row Generator
+  function addFaqRowToModal(faqId = '', question = '', answer = '') {
+    const row = document.createElement('div');
+    row.className = 'faq-editor-row';
+    row.dataset.faqId = faqId;
+    row.style.cssText = 'border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.75rem; display: flex; flex-direction: column; gap: 0.35rem; position: relative; margin-bottom: 0.5rem;';
+    
+    row.innerHTML = `
+      <input type="text" class="faq-q-input styled-input" style="font-size: 0.85rem; padding: 0.4rem 0.6rem; width: calc(100% - 30px);" value="${question.replace(/"/g, '&quot;')}" placeholder="FAQ Question">
+      <textarea class="faq-a-input pane-textarea" style="font-size: 0.82rem; min-height: 45px; width: 100%; margin: 0; padding: 0.4rem 0.6rem;" placeholder="FAQ Answer">${answer}</textarea>
+      <button class="modal-faq-del-btn" style="position: absolute; top: 0.4rem; right: 0; background: none; border: none; color: var(--danger); cursor: pointer; font-size: 1.25rem; font-weight: bold;">&times;</button>
+    `;
+    
+    // Bind delete button
+    row.querySelector('.modal-faq-del-btn').addEventListener('click', () => {
+      row.remove();
+    });
+    
+    modalFaqsList.appendChild(row);
+  }
+
+  // Bind Add FAQ button
+  document.getElementById('modal-add-faq-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    addFaqRowToModal();
+  });
 
   document.querySelectorAll('.btn-edit-tool').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -284,12 +348,22 @@
       modalToolName.textContent = `Edit Tool: ${tool.name}`;
       editName.value = tool.name;
       editSeoTitle.value = tool.seo_title || '';
-      editSeoDesc.value = tool.intro_paragraph || tool.page_description || '';
+      editSeoDesc.value = tool.seo_meta_desc || tool.intro_paragraph || tool.page_description || '';
       editDescTop.value = tool.description_top || '';
       editDescBottom.value = tool.description_bottom || '';
       editAdTop.value = tool.ad_top || '';
       editAdBottom.value = tool.ad_bottom || '';
       editAdSidebar.value = tool.ad_sidebar || '';
+      editStatus.value = tool.status || 'active';
+      editImagePath.value = tool.image_path || '';
+      editBulletPoints.value = tool.bullet_points || '';
+
+      // Populate FAQs for this tool
+      modalFaqsList.innerHTML = '';
+      const toolFaqs = window.faqsData.filter(f => f.tool_id === tool.id);
+      toolFaqs.forEach(faq => {
+        addFaqRowToModal(faq.id, faq.question, faq.answer);
+      });
 
       editModal.style.setProperty('display', 'flex', 'important');
     });
@@ -304,6 +378,21 @@
 
   document.getElementById('modal-save-btn').addEventListener('click', async () => {
     const toolKey = modalToolKey.value;
+    
+    // Collect FAQs
+    const faqs = [];
+    document.querySelectorAll('.faq-editor-row').forEach(row => {
+      const q = row.querySelector('.faq-q-input').value;
+      const a = row.querySelector('.faq-a-input').value;
+      if (q.trim() !== '' && a.trim() !== '') {
+        faqs.push({
+          id: row.dataset.faqId || null,
+          question: q,
+          answer: a
+        });
+      }
+    });
+
     const payload = {
       tool_key: toolKey,
       name: editName.value,
@@ -313,7 +402,11 @@
       description_bottom: editDescBottom.value,
       ad_top: editAdTop.value,
       ad_bottom: editAdBottom.value,
-      ad_sidebar: editAdSidebar.value
+      ad_sidebar: editAdSidebar.value,
+      status: editStatus.value,
+      image_path: editImagePath.value,
+      bullet_points: editBulletPoints.value,
+      faqs: faqs
     };
 
     try {
@@ -325,19 +418,7 @@
       const data = await res.json();
       if (data.success) {
         showToast('Changes saved to database!', 'success');
-        
-        // Update local window.toolsData
-        const idx = window.toolsData.findIndex(t => t.tool_key === toolKey);
-        if (idx !== -1) {
-          window.toolsData[idx] = { ...window.toolsData[idx], ...payload };
-          
-          // Update the table row display name dynamically
-          const row = document.querySelector(`tr[data-tool-key="${toolKey}"]`);
-          if (row) {
-            row.querySelector('.bold').textContent = payload.name;
-          }
-        }
-        closeModal();
+        setTimeout(() => window.location.reload(), 800);
       } else {
         showToast('Save failed: ' + data.error, 'danger');
       }

@@ -1,17 +1,53 @@
 <%- include('partials/header') %>
 
+<%
+  const currentMode = typeof mode !== 'undefined' ? mode : 'disabled';
+  const displayTitle = typeof title !== 'undefined' ? title : 'Tool Access Restricted';
+  const displayMessage = typeof message !== 'undefined' ? message : 'This tool has been disabled by the system administrator.';
+  
+  let iconColor = '#ef4444'; // Red
+  let iconBg = 'rgba(239, 68, 68, 0.1)';
+  let iconShadow = 'rgba(239, 68, 68, 0.2)';
+  let borderColor = 'rgba(239, 68, 68, 0.3)';
+  
+  if (currentMode === 'maintenance') {
+    iconColor = '#f59e0b'; // Amber
+    iconBg = 'rgba(245, 158, 11, 0.1)';
+    iconShadow = 'rgba(245, 158, 11, 0.2)';
+    borderColor = 'rgba(245, 158, 11, 0.3)';
+  } else if (currentMode === 'coming_soon') {
+    iconColor = '#06b6d4'; // Cyan
+    iconBg = 'rgba(6, 182, 212, 0.1)';
+    iconShadow = 'rgba(6, 182, 212, 0.2)';
+    borderColor = 'rgba(6, 182, 212, 0.3)';
+  }
+%>
+
 <main class="workspace" style="display: flex; align-items: center; justify-content: center; min-height: 80vh;">
-  <div style="background-color: rgba(17, 24, 39, 0.7); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 20px; padding: 3rem 2rem; max-width: 480px; text-align: center; box-shadow: 0 0 30px rgba(239, 68, 68, 0.15); backdrop-filter: blur(20px);">
-    <div style="width: 72px; height: 72px; background-color: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);">
-      <svg style="width: 36px; height: 36px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-      </svg>
+  <div style="background-color: rgba(17, 24, 39, 0.7); border: 1px solid <%= borderColor %>; border-radius: 20px; padding: 3rem 2rem; max-width: 480px; text-align: center; box-shadow: 0 0 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(20px);">
+    <div style="width: 72px; height: 72px; background-color: <%= iconBg %>; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: <%= iconColor %>; box-shadow: 0 0 15px <%= iconShadow %>;">
+      <% if (currentMode === 'maintenance') { %>
+        <svg style="width: 36px; height: 36px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      <% } else if (currentMode === 'coming_soon') { %>
+        <svg style="width: 36px; height: 36px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+      <% } else { %>
+        <svg style="width: 36px; height: 36px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      <% } %>
     </div>
-    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);">Tool Access Restricted</h2>
-    <p style="color: #9ca3af; font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6;">The tool <strong>"<%= toolName %>"</strong> has been disabled by the system administrator.</p>
+    <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary);"><%= displayTitle %></h2>
+    <p style="color: #9ca3af; font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6;"><%= displayMessage %></p>
     <div style="display: flex; gap: 1rem; justify-content: center;">
       <a href="/" class="btn btn-secondary">Go to Dashboard</a>
-      <a href="/admin" class="btn btn-primary">Enable in Admin Panel</a>
+      <% if (currentMode === 'disabled') { %>
+        <a href="/admin" class="btn btn-primary">Enable in Admin Panel</a>
+      <% } %>
     </div>
   </div>
 </main>
