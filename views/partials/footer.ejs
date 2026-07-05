@@ -1,3 +1,63 @@
   </div> <!-- end of app-container -->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileHamBtn = document.getElementById('mobile-menu-hamburger');
+      const navLinks = document.getElementById('navbar-links-list');
+      const allDropdowns = navLinks ? navLinks.querySelectorAll('.nav-item-dropdown') : [];
+
+      /* ---- Mobile hamburger toggle ---- */
+      if (mobileHamBtn && navLinks) {
+        mobileHamBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          navLinks.classList.toggle('open');
+          // Close all sub-dropdowns when closing the menu
+          if (!navLinks.classList.contains('open')) {
+            allDropdowns.forEach(d => d.classList.remove('open'));
+          }
+        });
+      }
+
+      /* ---- Per-dropdown button clicks (mobile accordion) ---- */
+      allDropdowns.forEach((dropdown) => {
+        const btn = dropdown.querySelector('.nav-link-btn');
+        if (btn) {
+          btn.addEventListener('click', (e) => {
+            if (window.innerWidth <= 1024) {
+              e.preventDefault();
+              e.stopPropagation();
+              const isOpen = dropdown.classList.contains('open');
+              // Close sibling dropdowns
+              allDropdowns.forEach(d => d.classList.remove('open'));
+              if (!isOpen) {
+                dropdown.classList.add('open');
+              }
+            }
+          });
+        }
+      });
+
+      /* ---- Close everything on outside click ---- */
+      document.addEventListener('click', (e) => {
+        if (
+          navLinks &&
+          navLinks.classList.contains('open') &&
+          !navLinks.contains(e.target) &&
+          e.target !== mobileHamBtn
+        ) {
+          navLinks.classList.remove('open');
+          allDropdowns.forEach(d => d.classList.remove('open'));
+        }
+        // Desktop — close on outside click too
+        if (window.innerWidth > 1024) {
+          allDropdowns.forEach((dropdown) => {
+            if (!dropdown.contains(e.target)) {
+              dropdown.classList.remove('open');
+            }
+          });
+        }
+      });
+    });
+  </script>
 </body>
 </html>

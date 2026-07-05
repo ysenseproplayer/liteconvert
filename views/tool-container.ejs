@@ -1,11 +1,10 @@
 <%- include('partials/header', { tool: tool }) %>
-<%- include('partials/sidebar', { activePage: tool.tool_key }) %>
 
-<main class="workspace" style="margin-left: 280px; width: calc(100% - 280px);">
+<main class="workspace">
   <header class="workspace-header">
     <div class="title-area">
+      <div class="category-pill"><%= tool.category %></div>
       <h2 id="tool-title"><%= tool.name %></h2>
-      <p id="tool-description" class="subtitle">Category: <%= tool.category %></p>
     </div>
   </header>
 
@@ -20,14 +19,65 @@
 
     <!-- DESCRIPTION TOP PARAGRAPH -->
     <% if (tool.description_top && tool.description_top.trim() !== '') { %>
-      <div class="card intro-paragraph-card" style="margin-bottom: 2rem; line-height: 1.7; border-left: 4px solid var(--accent-primary);">
-        <p style="color: var(--text-secondary); font-size: 0.95rem; margin: 0;"><%= tool.description_top %></p>
+      <div class="intro-description-wrapper">
+        <p><%= tool.description_top %></p>
       </div>
     <% } %>
     
     <!-- DYNAMIC TOOL INTERFACE EMBED -->
     <div style="margin-bottom: 2.5rem;">
       <%- include('tools/' + tool.tool_key) %>
+    </div>
+
+    <!-- 3-STEP HOW IT WORKS PROCESS -->
+    <div class="premium-card" style="margin-bottom: 2.5rem;">
+      <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: var(--text-primary); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        Convert in 3 Simple Steps
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; position: relative;">
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <div style="font-size: 2rem; font-weight: 700; color: rgba(0, 242, 254, 0.2); font-family: var(--font-heading);">01</div>
+          <h4 style="font-weight: 600; font-size: 1rem; color: var(--text-primary);">Upload File / Select Input</h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">Drag and drop your audio/video tracks, load from cloud, or edit inputs instantly.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <div style="font-size: 2rem; font-weight: 700; color: rgba(0, 242, 254, 0.2); font-family: var(--font-heading);">02</div>
+          <h4 style="font-weight: 600; font-size: 1rem; color: var(--text-primary);">Adjust Configuration</h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">Configure format buttons, volumes, durations, sample rates, or trim offsets.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <div style="font-size: 2rem; font-weight: 700; color: rgba(0, 242, 254, 0.2); font-family: var(--font-heading);">03</div>
+          <h4 style="font-weight: 600; font-size: 1rem; color: var(--text-primary);">Process & Download</h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">Execute high-fidelity rendering and download your output directly to your device.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRO TIPS & MISTAKES SECTION -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.75rem; margin-bottom: 2.5rem;">
+      <div class="premium-card tip-card" style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <h4 style="font-weight: 600; color: var(--success); display: flex; align-items: center; gap: 0.5rem; font-size: 1.05rem;">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+          Pro Tips
+        </h4>
+        <ul style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; padding-left: 1.25rem; margin: 0; display: flex; flex-direction: column; gap: 0.4rem;">
+          <li>Convert to **WAV** if you need uncompressed, maximum fidelity audio.</li>
+          <li>For mobile devices and standard streaming, **MP3 at 192kbps or 256kbps** offers the best trade-off between quality and size.</li>
+          <li>Keep the original sample rate unless you specifically require downsampling.</li>
+        </ul>
+      </div>
+      <div class="premium-card mistake-card" style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <h4 style="font-weight: 600; color: var(--danger); display: flex; align-items: center; gap: 0.5rem; font-size: 1.05rem;">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          Common Mistakes
+        </h4>
+        <ul style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; padding-left: 1.25rem; margin: 0; display: flex; flex-direction: column; gap: 0.4rem;">
+          <li>Avoid double lossy conversion (e.g. converting low-quality MP3 back to MP3) as it degrades quality further.</li>
+          <li>Do not refresh or navigate away from the page while the DSP progress bar is active.</li>
+          <li>Make sure to name files with the correct matching extension after downloads.</li>
+        </ul>
+      </div>
     </div>
 
     <!-- AD BOTTOM SLOT -->
@@ -39,7 +89,7 @@
 
     <!-- DESCRIPTION BOTTOM PARAGRAPH -->
     <% if (tool.description_bottom && tool.description_bottom.trim() !== '') { %>
-      <div class="card about-paragraph-card" style="margin-bottom: 2.5rem; line-height: 1.7;">
+      <div class="premium-card about-paragraph-card" style="margin-bottom: 2.5rem; line-height: 1.7;">
         <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: var(--text-primary); margin-bottom: 1rem;">About <%= tool.name %></h3>
         <p style="color: var(--text-secondary); font-size: 0.95rem; margin: 0;"><%= tool.description_bottom %></p>
       </div>
@@ -47,18 +97,18 @@
 
     <!-- DYNAMIC FAQ SECTION -->
     <% if (typeof faqs !== 'undefined' && faqs.length > 0) { %>
-      <div class="card" style="margin-bottom: 2.5rem;">
-        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: var(--text-primary); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+      <div class="premium-card" style="margin-bottom: 2.5rem;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: var(--text-primary); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
           <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           Frequently Asked Questions
         </h3>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
           <% faqs.forEach((faq, index) => { %>
-            <div class="faq-item" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 1rem;">
+            <div class="faq-item" style="border-bottom: 1px solid rgba(255, 255, 255, 0.03); padding-bottom: 1.25rem; margin-bottom: 0.25rem;">
               <h4 style="font-family: var(--font-heading); font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text-primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                 <span><%= faq.question %></span>
               </h4>
-              <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;"><%= faq.answer %></p>
+              <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;"><%= faq.answer %></p>
             </div>
           <% }); %>
         </div>

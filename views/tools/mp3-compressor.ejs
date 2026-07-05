@@ -1,1 +1,170 @@
-<%- include('_audio_layout') %>
+<!-- Dedicated MP3 Compressor Custom Workspace -->
+<div class="audio-workbench" data-tool-key="mp3-compressor" data-tool-category="converters">
+  <div class="tool-hero">
+    <div class="tool-hero-icon">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+    </div>
+    <div class="tool-hero-text">
+      <p class="tool-hero-desc"><%= tool.seo_meta_desc %></p>
+    </div>
+    <div class="tool-hero-badges">
+      <span class="hero-badge">100% Free</span>
+      <span class="hero-badge">Privacy Safe</span>
+      <span class="hero-badge">Browser-Side</span>
+    </div>
+  </div>
+
+  <div style="max-width: 680px; margin: 0 auto;">
+
+    <!-- STEP 1: UPLOAD -->
+    <div class="cv-step" id="step-1-section">
+      <div class="cv-step-num"><span>1</span></div>
+      <div class="cv-step-body">
+        <h3 class="cv-step-title">Upload MP3 File</h3>
+        
+        <!-- Drop Zone -->
+        <div class="cv-dropzone" id="drop-zone">
+          <input type="file" id="audio-file-input" style="display:none;" accept="audio/mpeg,audio/mp3">
+          <div class="cv-dropzone-icon">
+            <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+          </div>
+          <div class="cv-dropzone-text">
+            <strong>Drop your MP3 file here or click to browse</strong>
+            <span>Only MP3 format supported for compression</span>
+          </div>
+          <div class="cv-dropzone-btn">Choose File</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: OPTIONS (hidden initially) -->
+    <div class="cv-step hidden" id="step-2-section">
+      <div class="cv-step-num"><span>2</span></div>
+      <div class="cv-step-body">
+        <h3 class="cv-step-title">Advanced Options (Optional)</h3>
+
+        <div class="tool-panel" style="padding: 1.75rem; margin-top: 1rem;">
+          <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1.5rem; display:flex; justify-content:space-between;">
+            <span>File: <strong id="info-file-name" style="color:var(--text-primary);">track.mp3</strong></span>
+            <span>Original Size: <strong id="info-file-size" style="color:var(--accent-primary);">0.00 MB</strong></span>
+          </div>
+
+          <!-- Compression Method -->
+          <div class="ctrl-group" style="margin-bottom:1.5rem;">
+            <label class="ctrl-label">Compression Method</label>
+            <select id="comp-method" class="styled-select">
+              <option value="percentage">Target file size (percentage)</option>
+              <option value="size">Target file size (MB)</option>
+              <option value="quality">Target audio quality</option>
+            </select>
+          </div>
+
+          <!-- Slider 1: Percentage -->
+          <div class="ctrl-group" id="wrap-pct" style="margin-bottom:1.5rem;">
+            <label class="ctrl-label" style="display:flex; justify-content:space-between;">
+              <span>Enter Target Size Percentage</span>
+              <span><span id="val-pct" style="font-family:var(--font-mono); color:var(--accent-primary);">40</span> %</span>
+            </label>
+            <div style="display:flex; align-items:center; gap:1rem;">
+              <input type="range" id="comp-pct" class="styled-slider" min="10" max="90" step="5" value="40" style="flex:1;">
+              <input type="number" id="num-pct" class="styled-input" min="10" max="90" value="40" style="width:70px; text-align:center;">
+            </div>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.4rem;">Select a target file size as a percentage of the original. Smaller values compress more. For example, a 10MB file would become 4MB if you select 40%.</p>
+          </div>
+
+          <!-- Slider 2: Size (MB) (hidden) -->
+          <div class="ctrl-group hidden" id="wrap-size" style="margin-bottom:1.5rem;">
+            <label class="ctrl-label" style="display:flex; justify-content:space-between;">
+              <span>Enter Target Size (MB)</span>
+              <span><span id="val-size" style="font-family:var(--font-mono); color:var(--accent-primary);">2.0</span> MB</span>
+            </label>
+            <div style="display:flex; align-items:center; gap:1rem;">
+              <input type="range" id="comp-size" class="styled-slider" min="0.5" max="20" step="0.1" value="2.0" style="flex:1;">
+              <input type="number" id="num-size" class="styled-input" min="0.5" max="20" step="0.1" value="2.0" style="width:80px; text-align:center;">
+            </div>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.4rem;">Specify the desired output file size in megabytes. Compression will adjust to match this size as closely as possible.</p>
+          </div>
+
+          <!-- Slider 3: Quality (kbps) (hidden) -->
+          <div class="ctrl-group hidden" id="wrap-quality" style="margin-bottom:1.5rem;">
+            <label class="ctrl-label">Target Audio Quality</label>
+            <select id="comp-quality" class="styled-select">
+              <option value="64">64 kbps (Low Quality - Voice/Podcasts)</option>
+              <option value="96">96 kbps (Medium-Low Quality)</option>
+              <option value="128" selected>128 kbps (Standard Quality - Mobile/Streaming)</option>
+              <option value="192">192 kbps (Medium-High Quality)</option>
+              <option value="256">256 kbps (High Quality)</option>
+              <option value="320">320 kbps (Extreme Quality - Studio Master)</option>
+            </select>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:0.4rem;">Select the output audio encoding bitrate. Lower bitrates mean smaller file sizes but reduced sound clarity.</p>
+          </div>
+
+          <!-- Sample Rate Selection -->
+          <div class="ctrl-group" style="margin-bottom:1.5rem;">
+            <label class="ctrl-label">Target Sample Rate (Optional)</label>
+            <select id="comp-sample-rate" class="styled-select">
+              <option value="original">Keep Original</option>
+              <option value="48000">48 kHz (Studio Quality)</option>
+              <option value="44100">44.1 kHz (CD Quality)</option>
+              <option value="32000">32 kHz</option>
+              <option value="22050">22.05 kHz (Speech/Low-Fi)</option>
+              <option value="8000">8 kHz (Telephone)</option>
+            </select>
+          </div>
+
+          <!-- Audio Channels -->
+          <div class="ctrl-group" style="margin-bottom:1.5rem;">
+            <label class="ctrl-label">Audio Channels (Optional)</label>
+            <select id="comp-channels" class="styled-select">
+              <option value="original">Keep Original</option>
+              <option value="mono">Mono (Merges L/R Channels)</option>
+              <option value="stereo">Stereo</option>
+            </select>
+          </div>
+
+          <!-- Keep Metadata checkbox -->
+          <div class="ctrl-group" style="margin-bottom:2rem;">
+            <label class="checkbox-container">
+              Keep Metadata (ID3 tags, title, artist, cover art)
+              <input type="checkbox" id="comp-metadata" checked>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex; justify-content:flex-end; gap:1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top:1.5rem;">
+            <button class="btn btn-secondary" id="btn-reset">Reset Options</button>
+            <button class="btn btn-primary" id="btn-compress" style="background:var(--accent-gradient); min-width:160px;">Apply Settings & Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: PROGRESS -->
+    <div class="panel-progress hidden" id="processing-card" style="margin-top: 2rem;">
+      <div class="progress-status" id="processing-status">Compressing audio data...</div>
+      <div class="progress-track">
+        <div class="progress-bar" id="processing-progress-bar" style="width:10%;"></div>
+      </div>
+    </div>
+
+    <!-- STEP 4: SUCCESS DOWNLOAD -->
+    <div class="panel-download hidden" id="download-card" style="margin-top: 2rem; padding: 2rem;">
+      <div class="download-icon" style="background:rgba(16,185,129,0.1); color:var(--success); border-color:rgba(16,185,129,0.2);">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+      </div>
+      <div class="download-info">
+        <strong>Audio Compressed Successfully!</strong>
+        <span id="download-file-size" style="font-family:var(--font-mono); color:var(--success);">0.00 MB</span>
+      </div>
+      <div style="display:flex; gap:1rem; margin-top:1.5rem; width:100%; justify-content:center;">
+        <button class="btn btn-secondary" id="btn-compress-another">Compress Another</button>
+        <a href="" id="download-link" download class="btn btn-success" style="background:var(--success); color:white; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; padding: 0.75rem 1.5rem;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          Download File
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>

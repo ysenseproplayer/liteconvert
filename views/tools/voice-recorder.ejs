@@ -1,0 +1,80 @@
+<!-- Voice Recorder Tool -->
+<div class="audio-workbench" data-tool-key="voice-recorder" data-tool-category="editors">
+  <div class="tool-hero">
+    <div class="tool-hero-icon">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+    </div>
+    <div class="tool-hero-text">
+      <p class="tool-hero-desc"><%= tool.intro_paragraph || tool.page_description %></p>
+    </div>
+    <div class="tool-hero-badges">
+      <span class="hero-badge"><svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg> 100% Free</span>
+      <span class="hero-badge"><svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg> Privacy Safe</span>
+      <span class="hero-badge"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg> Browser-Side</span>
+    </div>
+  </div>
+
+  <div style="max-width: 620px; margin: 0 auto;">
+
+    <!-- Recorder Main Card -->
+    <div class="tool-panel" style="margin-bottom: 2rem;">
+      <div class="panel-label">Voice Recorder</div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 2rem; padding: 1rem 0;">
+
+        <!-- Mic Visualizer Ring -->
+        <div id="mic-ring" style="width: 120px; height: 120px; border-radius: 50%; background: rgba(0,242,254,0.08); border: 2px solid rgba(0,242,254,0.35); display: flex; align-items: center; justify-content: center; transition: all 0.3s; position: relative; box-shadow: 0 0 25px rgba(0,242,254,0.15), inset 0 0 15px rgba(0,242,254,0.1);">
+          <svg id="mic-icon" width="42" height="42" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--accent-primary); filter: drop-shadow(0 0 8px rgba(0,242,254,0.5));"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+          <div id="recording-pulse" class="hidden" style="position:absolute; inset:-6px; border-radius:50%; border:3px solid rgba(239,68,68,0.5); animation: pulse-ring 1.5s infinite;"></div>
+        </div>
+
+        <!-- Timer -->
+        <div id="recorder-timer" style="font-family: var(--font-mono); font-size: 2.5rem; font-weight: 700; color: var(--text-primary); letter-spacing: 4px;">00:00</div>
+
+        <!-- Status text -->
+        <div id="recorder-status" style="font-size: 0.9rem; color: var(--text-muted);">Click the button below to start recording</div>
+
+        <!-- Control Buttons -->
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <button id="btn-start-record" class="btn-main-action" style="min-width: 160px;">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+            Start Recording
+          </button>
+          <button id="btn-stop-record" class="ctrl-btn-mini hidden" style="min-width: 120px;">
+            <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+            <span>Stop</span>
+          </button>
+        </div>
+
+        <!-- Waveform mini visualizer during recording -->
+        <canvas id="recorder-canvas" width="500" height="48" style="width: 100%; height: 48px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); display: none;"></canvas>
+      </div>
+    </div>
+
+    <!-- Download card (hidden until recording done) -->
+    <div id="recorder-download-card" class="tool-panel hidden" style="text-align: center; padding: 2rem;">
+      <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--success); margin: 0 auto 1rem; display: block;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Recording Complete!</h3>
+      <p id="recorder-output-info" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Duration: 00:00 | Format: MP3</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a id="recorder-download-link" href="" download="recording.wav" class="btn btn-success" style="background: var(--success); color: white; padding: 0.75rem 1.75rem; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          Download Recording
+        </a>
+        <button id="btn-record-again" class="ctrl-btn-mini" style="padding: 0.75rem 1.25rem;">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M4 4l4 4" /></svg>
+          <span>Record Again</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+</style>
+
+
+

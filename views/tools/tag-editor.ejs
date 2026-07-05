@@ -1,1 +1,99 @@
-<%- include('_audio_layout') %>
+<!-- MP3 Tag Editor -->
+<div class="audio-workbench" data-tool-key="tag-editor" data-tool-category="utilities">
+  <div class="tool-hero">
+    <div class="tool-hero-icon">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
+    </div>
+    <div class="tool-hero-text"><p class="tool-hero-desc"><%= tool.intro_paragraph || tool.page_description %></p></div>
+    <div class="tool-hero-badges">
+      <span class="hero-badge">100% Free</span>
+      <span class="hero-badge">Privacy Safe</span>
+      <span class="hero-badge">Browser-Side</span>
+    </div>
+  </div>
+
+  <div style="max-width: 700px; margin: 0 auto;">
+
+    <!-- Upload Card -->
+    <div id="tag-upload-card" class="tool-panel" style="margin-bottom: 1.5rem;">
+      <div class="panel-label">Step 1 — Upload MP3</div>
+      <div id="tag-drop-zone" class="cv-dropzone" style="margin-top: 0.75rem;">
+        <input type="file" id="tag-file-input" style="display:none;" accept=".mp3,audio/mpeg">
+        <div class="cv-dropzone-icon"><svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg></div>
+        <div class="cv-dropzone-text">
+          <strong>Drop MP3 file here or click to browse</strong>
+          <span>Only MP3 files are supported</span>
+        </div>
+        <div class="cv-dropzone-btn">Choose MP3</div>
+      </div>
+      <div id="tag-file-info" class="hidden" style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); padding: 0.75rem 1rem; border-radius: 8px;">
+        <span id="tag-file-name" style="font-weight: 600; color: var(--text-primary); font-size: 0.9rem;">track.mp3</span>
+        <button id="tag-btn-remove" style="background: transparent; border: none; color: var(--danger); cursor: pointer; font-size: 1.2rem; font-weight: bold;">&times;</button>
+      </div>
+    </div>
+
+    <!-- Tag Edit Fields Card -->
+    <div id="tag-editor-card" class="tool-panel hidden" style="margin-bottom: 1.5rem;">
+      <div class="panel-label">Step 2 — Edit ID3 Tags</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem;">
+        <div class="ctrl-group">
+          <label class="ctrl-label">Title</label>
+          <input type="text" id="tag-title" class="styled-input" placeholder="Track title...">
+        </div>
+        <div class="ctrl-group">
+          <label class="ctrl-label">Artist</label>
+          <input type="text" id="tag-artist" class="styled-input" placeholder="Artist name...">
+        </div>
+        <div class="ctrl-group">
+          <label class="ctrl-label">Album</label>
+          <input type="text" id="tag-album" class="styled-input" placeholder="Album name...">
+        </div>
+        <div class="ctrl-group">
+          <label class="ctrl-label">Year</label>
+          <input type="text" id="tag-year" class="styled-input" placeholder="2024">
+        </div>
+        <div class="ctrl-group" style="grid-column: span 2;">
+          <label class="ctrl-label">Genre</label>
+          <input type="text" id="tag-genre" class="styled-input" placeholder="Pop, Rock, Electronic...">
+        </div>
+      </div>
+      <button id="btn-save-tags" class="btn-main-action" style="width: 100%; margin-top: 1.5rem;">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
+        Save Tags & Download
+      </button>
+    </div>
+
+    <!-- Download Ready -->
+    <div id="tag-success-card" class="tool-panel hidden" style="text-align: center; padding: 2rem; border: 1px solid rgba(16,185,129,0.2); background: rgba(16,185,129,0.02);">
+      <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color:var(--success); margin: 0 auto 1rem; display:block;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Tags Written Successfully!</h3>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Your MP3 has been updated with new ID3 tags and is ready to download.</p>
+      <a id="tag-download-link" href="" download="tagged.mp3" class="btn btn-success" style="background: var(--success); color: white; padding: 0.75rem 2rem; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+        Download Tagged MP3
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.styled-input {
+  width: 100%;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.styled-input:focus {
+  border-color: var(--accent-primary);
+}
+</style>
+
+

@@ -1,1 +1,63 @@
-<%- include('_audio_layout') %>
+<div class="happyscribe-wrapper" data-tool-key="wav-mp3">
+  <!-- Happyscribe Hero Section -->
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <h1 style="font-family: var(--font-heading); font-size: 2.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">Convert WAV to MP3</h1>
+    <p style="font-size: 1.05rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Convert your WAV audio files to MP3 online for free. 100% secure, private, and runs directly in your browser.</p>
+  </div>
+
+  <!-- Large Centered Drop Card -->
+  <div class="card happyscribe-upload-card" id="hs-drop-zone" style="max-width: 680px; margin: 0 auto 3rem; min-height: 280px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px dashed rgba(0, 242, 254, 0.25); border-radius: 16px; background-color: rgba(18, 22, 32, 0.4); text-align: center; padding: 3rem; cursor: pointer; transition: all 0.3s;">
+    <input type="file" id="hs-file-input" style="display: none;" accept=".wav,audio/wav">
+    <div style="width: 70px; height: 70px; border-radius: 50%; background-color: rgba(0, 242, 254, 0.08); display: flex; justify-content: center; align-items: center; margin-bottom: 1.5rem; color: var(--accent-primary);">
+      <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg>
+    </div>
+    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Select your WAV file</h3>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">or drag and drop your file here</p>
+    <button class="btn btn-primary" onclick="document.getElementById('hs-file-input').click()" style="background: var(--accent-gradient); box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);">Choose a File</button>
+  </div>
+
+  <!-- Uploaded files list and conversion triggers (hidden by default) -->
+  <div class="card hidden" id="hs-process-panel" style="max-width: 680px; margin: 0 auto 3rem; padding: 1.75rem;">
+    <h3 style="font-family: var(--font-heading); font-size: 1.1rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem; margin-bottom: 1rem;">Uploaded WAV Track</h3>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; background-color: rgba(255,255,255,0.01); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--accent-secondary);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
+        <div>
+          <div id="hs-file-name" style="font-weight: 600; font-size: 0.95rem;">track.wav</div>
+          <div id="hs-file-size" style="font-size: 0.8rem; color: var(--text-muted);">-- MB</div>
+        </div>
+      </div>
+      <button class="icon-btn danger" id="hs-btn-remove" title="Remove File">&times;</button>
+    </div>
+
+    <!-- Converter output options -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-secondary);">Output format:</span>
+      <span style="font-size: 0.95rem; font-weight: 700; color: var(--accent-primary); background-color: rgba(0, 242, 254, 0.08); padding: 0.25rem 0.75rem; border-radius: 6px; border: 1px solid rgba(0, 242, 254, 0.2);">MP3 Audio</span>
+    </div>
+
+    <button class="btn btn-primary btn-full" id="hs-btn-convert" style="background: var(--accent-gradient); font-size: 1rem; padding: 0.85rem;">Convert to MP3</button>
+  </div>
+
+  <!-- Processing / Progress state -->
+  <div class="card hidden" id="hs-processing-panel" style="max-width: 680px; margin: 0 auto 3rem; padding: 2rem; text-align: center;">
+    <h4 id="hs-status-text" style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem;">Converting track.wav to MP3...</h4>
+    <div style="width: 100%; height: 6px; background-color: rgba(255,255,255,0.03); border-radius: 3px; overflow: hidden; position: relative;">
+      <div id="hs-progress-bar" style="width: 10%; height: 100%; background: var(--accent-gradient); border-radius: 3px; transition: width 0.2s;"></div>
+    </div>
+  </div>
+
+  <!-- Download result -->
+  <div class="card hidden" id="hs-success-panel" style="max-width: 680px; margin: 0 auto 3rem; padding: 2.5rem; text-align: center; border: 1px solid rgba(16, 185, 129, 0.2); background-color: rgba(16, 185, 129, 0.02);">
+    <div style="width: 60px; height: 60px; border-radius: 50%; background-color: rgba(16, 185, 129, 0.1); color: var(--success); display: flex; justify-content: center; align-items: center; margin: 0 auto 1.25rem;">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+    </div>
+    <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">Conversion Complete!</h3>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.75rem;" id="hs-output-info">Output format: MP3 | File Size: -- KB</p>
+    <a href="" id="hs-download-link" download class="btn btn-success" style="background-color: var(--success); color: white; padding: 0.8rem 2rem; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 1rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+      Download MP3
+    </a>
+  </div>
+</div>

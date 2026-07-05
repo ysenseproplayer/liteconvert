@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= typeof tool !== 'undefined' ? tool.seo_title : 'LiteConvert - Premium File & Data Format Converter' %></title>
-  <meta name="description" content="<%= typeof tool !== 'undefined' ? tool.seo_meta_desc : 'A premium online utility tool for lightning-fast image resizing, format conversions, document compilation, and code formatting.' %>">
+  <meta name="description" content="<%= typeof tool !== 'undefined' ? tool.intro_paragraph || tool.page_description : 'A premium online utility tool for lightning-fast image resizing, format conversions, document compilation, and code formatting.' %>">
   <meta name="robots" content="index, follow">
   
   <!-- Canonical URL -->
@@ -13,7 +13,7 @@
   <!-- Open Graph / Facebook -->
   <meta property="og:site_name" content="LiteConvert">
   <meta property="og:title" content="<%= typeof tool !== 'undefined' ? tool.seo_title : 'LiteConvert - Premium File & Data Format Converter' %>">
-  <meta property="og:description" content="<%= typeof tool !== 'undefined' ? tool.seo_meta_desc : 'A premium online utility tool for lightning-fast image resizing, format conversions, document compilation, and code formatting.' %>">
+  <meta property="og:description" content="<%= typeof tool !== 'undefined' ? tool.intro_paragraph || tool.page_description : 'A premium online utility tool for lightning-fast image resizing, format conversions, document compilation, and code formatting.' %>">
   <meta property="og:url" content="<%= siteUrl %><%= currentPath %>">
   <meta property="og:type" content="website">
   <meta property="og:image" content="<%= siteUrl %>/images/og-preview.png">
@@ -21,7 +21,7 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<%= typeof tool !== 'undefined' ? tool.seo_title : 'LiteConvert - Premium File & Data Format Converter' %>">
-  <meta name="twitter:description" content="<%= typeof tool !== 'undefined' ? tool.seo_meta_desc : 'A premium online utility tool for lightning-fast image resizing, format conversions, document compilation, and code formatting.' %>">
+  <meta name="twitter:description" content="<%= typeof tool !== 'undefined' ? tool.intro_paragraph || tool.page_description : 'A premium online utility tool for lightning-fast image resizing, format conversions, document compilation, and code formatting.' %>">
   <meta name="twitter:image" content="<%= siteUrl %>/images/og-preview.png">
 
   <!-- Schema.org JSON-LD Structured Data -->
@@ -52,7 +52,7 @@
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "All",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "description": "<%= tool.seo_meta_desc %>"
+    "description": "<%= tool.intro_paragraph || tool.page_description %>"
   }
   </script>
   <% if (typeof faqs !== 'undefined' && faqs.length > 0) { %>
@@ -80,7 +80,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=5">
+  <link rel="stylesheet" href="/style.css?v=11">
   
   <script type="importmap">
   {
@@ -93,4 +93,125 @@
   </script>
 </head>
 <body>
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="top-navbar">
+    <a href="/" class="brand-nav">
+      <div class="brand-logo-nav">LC</div>
+      <span class="brand-title-nav">LiteConvert</span>
+    </a>
+
+    <!-- Navigation links -->
+    <ul class="nav-links" id="navbar-links-list">
+      <li>
+        <a href="/" class="nav-link-btn <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+      </li>
+
+      <!-- 1. CONVERTERS DROPDOWN -->
+      <li class="nav-item-dropdown">
+        <button class="nav-link-btn">
+          <span>Converters</span>
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+        </button>
+        <div class="mega-menu-panel" style="width: 480px;">
+          <% 
+            var popularConv = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && (t.category === 'Audio Converters' || t.category === 'Audio Compressors'); }) : [];
+            var nicheConv = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'File Converters'; }) : [];
+          %>
+          <div class="mega-menu-column">
+            <span class="mega-menu-title">Audio Converters</span>
+            <% popularConv.slice(0, 8).forEach(function(t) { %>
+              <a href="/tool/<%= t.tool_key %>" class="mega-menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:10px; height:10px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <%= t.name.replace(' Converter', '').replace(' Generator', '') %>
+              </a>
+            <% }); %>
+          </div>
+          <div class="mega-menu-column">
+            <span class="mega-menu-title">File Converters</span>
+            <% nicheConv.slice(0, 8).forEach(function(t) { %>
+              <a href="/tool/<%= t.tool_key %>" class="mega-menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:10px; height:10px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <%= t.name.replace(' Converter', '').replace(' Generator', '') %>
+              </a>
+            <% }); %>
+          </div>
+        </div>
+      </li>
+
+      <!-- 2. EDITORS & UTILITIES DROPDOWN -->
+      <li class="nav-item-dropdown">
+        <button class="nav-link-btn">
+          <span>Editors</span>
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+        </button>
+        <div class="mega-menu-panel" style="width: 480px;">
+          <% 
+            var editors = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && (t.category === 'Audio Editing' || t.category === 'Creative Audio'); }) : [];
+            var utilities = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'Utilities & Generators'; }) : [];
+          %>
+          <div class="mega-menu-column">
+            <span class="mega-menu-title">Audio Editing</span>
+            <% editors.slice(0, 8).forEach(function(t) { %>
+              <a href="/tool/<%= t.tool_key %>" class="mega-menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:10px; height:10px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <%= t.name.replace(' Converter', '').replace(' Generator', '').replace(' Cutter', '').replace(' Trimmer', '') %>
+              </a>
+            <% }); %>
+          </div>
+          <div class="mega-menu-column">
+            <span class="mega-menu-title">Utilities</span>
+            <% utilities.slice(0, 8).forEach(function(t) { %>
+              <a href="/tool/<%= t.tool_key %>" class="mega-menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:10px; height:10px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <%= t.name.replace(' Converter', '').replace(' Generator', '') %>
+              </a>
+            <% }); %>
+          </div>
+        </div>
+      </li>
+
+      <!-- 3. EFFECTS & AI DROPDOWN -->
+      <li class="nav-item-dropdown">
+        <button class="nav-link-btn">
+          <span>Effects & AI</span>
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+        </button>
+        <div class="mega-menu-panel" style="width: 480px;">
+          <% 
+            var effects = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'AI & Vocals'; }) : [];
+            var creative = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'Aesthetic & FX'; }) : [];
+          %>
+          <div class="mega-menu-column">
+            <span class="mega-menu-title">AI & Vocals</span>
+            <% effects.slice(0, 8).forEach(function(t) { %>
+              <a href="/tool/<%= t.tool_key %>" class="mega-menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:10px; height:10px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <%= t.name.replace(' Converter', '').replace(' Generator', '') %>
+              </a>
+            <% }); %>
+          </div>
+          <div class="mega-menu-column">
+            <span class="mega-menu-title">Aesthetic & FX</span>
+            <% creative.slice(0, 8).forEach(function(t) { %>
+              <a href="/tool/<%= t.tool_key %>" class="mega-menu-item">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:10px; height:10px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <%= t.name.replace(' Converter', '').replace(' Generator', '') %>
+              </a>
+            <% }); %>
+          </div>
+        </div>
+      </li>
+
+      <li>
+        <a href="/admin" class="nav-link-btn <%= typeof activePage !== 'undefined' && activePage === 'admin' ? 'active' : '' %>">Admin CMS</a>
+      </li>
+    </ul>
+
+    <!-- Mobile Hamburger -->
+    <button class="mobile-hamburger-btn" id="mobile-menu-hamburger" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+    </button>
+  </header>
+
   <div class="app-container">
+

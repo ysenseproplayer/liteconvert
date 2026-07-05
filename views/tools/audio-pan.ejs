@@ -1,0 +1,146 @@
+<!-- Custom Auto Panner Workspace -->
+<div class="audio-workbench" data-tool-key="audio-pan" data-tool-category="effects">
+  <div class="tool-hero">
+    <div class="tool-hero-icon">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+    </div>
+    <div class="tool-hero-text">
+      <p class="tool-hero-desc"><%= tool.seo_meta_desc %></p>
+    </div>
+    <div class="tool-hero-badges">
+      <span class="hero-badge">100% Free</span>
+      <span class="hero-badge">Privacy Safe</span>
+      <span class="hero-badge">Browser-Side</span>
+    </div>
+  </div>
+
+  <div style="max-width: 720px; margin: 0 auto;">
+
+    <!-- STEP 1: UPLOAD -->
+    <div class="cv-step" id="step-1-section">
+      <div class="cv-step-num"><span>1</span></div>
+      <div class="cv-step-body">
+        <h3 class="cv-step-title">Open Audio File</h3>
+
+        <!-- Drop Zone -->
+        <div class="cv-dropzone" id="drop-zone">
+          <input type="file" id="audio-file-input" style="display:none;" accept="audio/*">
+          <div class="cv-dropzone-icon">
+            <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+          </div>
+          <div class="cv-dropzone-text">
+            <strong>Drop your audio file here or click to browse</strong>
+            <span>Create dynamic left-right stereo movements client-side</span>
+          </div>
+          <div class="cv-dropzone-btn">Choose File</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: AUTO PANNER WORKSPACE (hidden initially) -->
+    <div class="cv-step hidden" id="step-2-section">
+      <div class="cv-step-num"><span>2</span></div>
+      <div class="cv-step-body">
+        <h3 class="cv-step-title">Adjust Auto Panner Parameters</h3>
+
+        <div class="tool-panel" style="padding: 1.75rem; margin-top: 1rem;">
+          <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+            <span>File: <strong id="info-file-name" style="color:var(--text-primary);">track.mp3</strong></span>
+            <span class="badge" id="info-file-duration" style="font-family:var(--font-mono); background:rgba(0,0,0,0.15); padding:0.2rem 0.5rem; border-radius:4px;">00:00</span>
+          </div>
+
+          <!-- Waveform Visualizer -->
+          <div style="position:relative; height:100px; background:rgba(0,0,0,0.15); border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.5rem; overflow:hidden;">
+            <canvas id="panner-canvas" height="100" style="width:100%; height:100%; display:block; opacity:0.85;"></canvas>
+            <div id="panner-progress" style="position:absolute; top:0; left:0; width:0%; height:100%; background:rgba(0,242,254,0.06); pointer-events:none;"></div>
+            <div id="panner-playhead" style="position:absolute; top:0; bottom:0; left:0; width:2px; background:var(--accent-primary); box-shadow:0 0 6px var(--accent-primary); pointer-events:none;"></div>
+          </div>
+
+          <!-- Playback controls -->
+          <div style="display:flex; justify-content:center; align-items:center; gap:1.25rem; margin-bottom:2rem; background:rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.03); padding:0.75rem 1.5rem; border-radius:8px;">
+            <button class="player-play-btn" id="btn-play-pause" title="Play / Pause">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" id="play-icon"><path d="M8 5v14l11-7z" /></svg>
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" id="pause-icon" class="hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
+            </button>
+            <div style="font-family:var(--font-mono); font-size:1.1rem; letter-spacing:1px;">
+              <span id="player-current-time">00:00</span>
+              <span style="color:var(--text-muted); margin:0 0.25rem;">/</span>
+              <span id="player-total-time">00:00</span>
+            </div>
+          </div>
+
+          <!-- Pan Rate Slider -->
+          <div class="ctrl-group" style="margin-bottom:2rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+              <span class="ctrl-label" style="margin:0;">Pan Rate</span>
+              <strong style="font-family:var(--font-mono); color:var(--accent-primary);" id="lbl-pan-rate">0.50 Hz</strong>
+            </div>
+            <input type="range" id="pan-rate" class="styled-slider" min="0.05" max="4.0" step="0.05" value="0.5" style="width:100%;">
+            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); margin-top:0.4rem; padding:0 0.1rem;">
+              <span>0.1 Hz (Slow)</span>
+              <span>1 Hz</span>
+              <span>2 Hz (Fast)</span>
+            </div>
+          </div>
+
+          <!-- Pan Depth Slider -->
+          <div class="ctrl-group" style="margin-bottom:2rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+              <span class="ctrl-label" style="margin:0;">Pan Depth</span>
+              <strong style="font-family:var(--font-mono); color:var(--accent-primary);" id="lbl-pan-depth">80%</strong>
+            </div>
+            <input type="range" id="pan-depth" class="styled-slider" min="0" max="100" step="5" value="80" style="width:100%;">
+            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); margin-top:0.4rem; padding:0 0.1rem;">
+              <span>10% (Subtle)</span>
+              <span>50%</span>
+              <span>100% (Full)</span>
+            </div>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="ctrl-group" style="margin-bottom:2.25rem;">
+            <label class="ctrl-label" style="margin-bottom:0.6rem;">Presets</label>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="btn btn-secondary preset-btn" data-rate="0.2" data-depth="95" style="font-size:0.8rem; padding:0.4rem 1rem;">8D Audio Style</button>
+              <button class="btn btn-secondary preset-btn" data-rate="0.5" data-depth="40" style="font-size:0.8rem; padding:0.4rem 1rem;">Subtle Sweep</button>
+              <button class="btn btn-secondary preset-btn" data-rate="2.0" data-depth="80" style="font-size:0.8rem; padding:0.4rem 1rem;">Fast Pan</button>
+            </div>
+          </div>
+
+          <!-- Action buttons -->
+          <div style="display:flex; justify-content:flex-end; gap:1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top:1.5rem;">
+            <button class="btn btn-secondary" id="btn-reset">Reset</button>
+            <button class="btn btn-primary" id="btn-process" style="background:var(--accent-gradient); min-width:180px;">Process & Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: PROCESSING -->
+    <div class="panel-progress hidden" id="processing-card" style="margin-top: 2rem;">
+      <div class="progress-status" id="processing-status">Modulating stereo panner...</div>
+      <div class="progress-track">
+        <div class="progress-bar" id="processing-progress-bar" style="width:10%;"></div>
+      </div>
+    </div>
+
+    <!-- STEP 4: SUCCESS DOWNLOAD -->
+    <div class="panel-download hidden" id="download-card" style="margin-top: 2rem; padding: 2rem;">
+      <div class="download-icon" style="background:rgba(16,185,129,0.1); color:var(--success); border-color:rgba(16,185,129,0.2);">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+      </div>
+      <div class="download-info">
+        <strong>Audio Panned Successfully!</strong>
+        <span id="download-file-size" style="font-family:var(--font-mono); color:var(--success);">0.00 MB</span>
+      </div>
+      <div style="display:flex; gap:1rem; margin-top:1.5rem; width:100%; justify-content:center;">
+        <button class="btn btn-secondary" id="btn-panner-another">Pan Another</button>
+        <a href="" id="download-link" download class="btn btn-success" style="background:var(--success); color:white; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; padding: 0.75rem 1.5rem;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          Download Master
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>

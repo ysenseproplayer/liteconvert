@@ -1,1 +1,100 @@
-<%- include('_audio_layout') %>
+<!-- Advanced Audio Joiner Custom Workspace -->
+<div class="audio-workbench" data-tool-key="audio-joiner" data-tool-category="editors">
+  <div class="tool-hero">
+    <div class="tool-hero-icon">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+    </div>
+    <div class="tool-hero-text">
+      <p class="tool-hero-desc"><%= tool.seo_meta_desc %></p>
+    </div>
+    <div class="tool-hero-badges">
+      <span class="hero-badge">100% Free</span>
+      <span class="hero-badge">Privacy Safe</span>
+      <span class="hero-badge">Browser-Side</span>
+    </div>
+  </div>
+
+  <div style="max-width: 840px; margin: 0 auto;">
+
+    <!-- STEP 1: UPLOAD (Drop Zone) -->
+    <div class="cv-step" id="step-1-section">
+      <div class="cv-step-num"><span>1</span></div>
+      <div class="cv-step-body">
+        <h3 class="cv-step-title">Select Your Audio Tracks</h3>
+
+        <div class="cv-dropzone" id="drop-zone">
+          <input type="file" id="audio-file-input" style="display:none;" accept="audio/*" multiple>
+          <div class="cv-dropzone-icon">
+            <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
+          </div>
+          <div class="cv-dropzone-text">
+            <strong>Drop multiple audio files here or click to browse</strong>
+            <span>Queue and stitch tracks sequentially in your browser</span>
+          </div>
+          <div class="cv-dropzone-btn">Choose Files</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: STACKED WORKSPACE (hidden initially) -->
+    <div class="cv-step hidden" id="step-2-section">
+      <div class="cv-step-num"><span>2</span></div>
+      <div class="cv-step-body">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <h3 class="cv-step-title" style="margin:0;">Stitch Timeline & Reorder</h3>
+          <span class="badge" id="queue-tracks-count" style="font-family:var(--font-mono); background:rgba(0,242,254,0.05); color:var(--accent-primary); padding:0.25rem 0.6rem; border-radius:4px; font-size:0.82rem;">0 tracks</span>
+        </div>
+
+        <!-- Stacked track list -->
+        <div id="joiner-tracks-stack" style="display:flex; flex-direction:column; gap:1.25rem; margin-bottom:2rem;"></div>
+
+        <!-- Workspace controls -->
+        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.05); padding-top:1.5rem; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <button class="btn btn-secondary" id="btn-add-more" style="display:inline-flex; align-items:center; gap:0.4rem;">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+              Add more files
+            </button>
+            <button class="btn btn-secondary" id="btn-reset-timeline" style="margin-left:0.5rem;">Reset All</button>
+          </div>
+          
+          <button class="btn btn-primary" id="btn-stitch" style="background:var(--accent-gradient); min-width:180px; display:inline-flex; align-items:center; justify-content:center; gap:0.5rem;">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+            Join & Save Master
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: PROCESSING (hidden) -->
+    <div class="panel-progress hidden" id="processing-card" style="margin-top: 2rem;">
+      <div class="progress-status" id="processing-status">Stitching audio timeline...</div>
+      <div class="progress-track">
+        <div class="progress-bar" id="processing-progress-bar" style="width:10%;"></div>
+      </div>
+    </div>
+
+    <!-- STEP 4: RESULT DOWNLOAD (hidden) -->
+    <div class="panel-download hidden" id="download-card" style="margin-top: 2rem; padding: 2.25rem;">
+      <div class="download-icon" style="background:rgba(16,185,129,0.1); color:var(--success); border-color:rgba(16,185,129,0.2);">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+      </div>
+      <div class="download-info" style="margin-bottom:1.5rem;">
+        <strong>Audio Mix Complete!</strong>
+        <span id="download-file-size" style="font-family:var(--font-mono); color:var(--success);">0.00 MB</span>
+      </div>
+
+      <!-- Preview player -->
+      <audio id="master-preview-player" controls style="width:100%; margin-bottom:1.5rem;"></audio>
+
+      <div style="display:flex; gap:1rem; width:100%; justify-content:center;">
+        <button class="btn btn-secondary" id="btn-join-another">Join Another</button>
+        <a href="" id="download-link" download class="btn btn-success" style="background:var(--success); color:white; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; padding: 0.75rem 2rem;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          Download Master Track
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>

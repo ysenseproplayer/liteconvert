@@ -1,2 +1,1 @@
-import { initAudioTool } from './_audio_controller.js';
-initAudioTool();
+import './_ffmpeg_converter.js';

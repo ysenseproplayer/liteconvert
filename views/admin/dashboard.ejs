@@ -1,7 +1,6 @@
 <%- include('../partials/header', { activePage: 'admin' }) %>
-<%- include('../partials/sidebar', { activePage: 'admin' }) %>
 
-<main class="workspace" style="margin-left: 280px; width: calc(100% - 280px);">
+<main class="workspace">
   <header class="workspace-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 1.5rem; margin-bottom: 2rem;">
     <div class="title-area">
       <h2 id="tool-title">CMS Admin Control Panel</h2>
@@ -285,7 +284,7 @@
       modalToolName.textContent = `Edit Tool: ${tool.name}`;
       editName.value = tool.name;
       editSeoTitle.value = tool.seo_title || '';
-      editSeoDesc.value = tool.seo_meta_desc || '';
+      editSeoDesc.value = tool.intro_paragraph || tool.page_description || '';
       editDescTop.value = tool.description_top || '';
       editDescBottom.value = tool.description_bottom || '';
       editAdTop.value = tool.ad_top || '';
@@ -492,3 +491,4 @@
 </script>
 
 <%- include('../partials/footer') %>
+

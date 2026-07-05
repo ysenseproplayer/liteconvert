@@ -1,1 +1,38 @@
-<%- include('_audio_layout') %>
+<!-- Audio Splitter - Coming Soon Workspace -->
+<div class="audio-workbench" style="max-width: 600px; margin: 2rem auto; text-align: center;">
+  
+  <div class="tool-panel" style="padding: 3rem 2rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; border: 1px solid rgba(0, 242, 254, 0.15); background: rgba(10, 15, 30, 0.4); backdrop-filter: blur(16px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);">
+    
+    <div style="width: 72px; height: 72px; background: rgba(0, 242, 254, 0.05); color: var(--accent-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 242, 254, 0.15); box-shadow: 0 0 20px rgba(0, 242, 254, 0.15);">
+      <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 2.122 3 3 0 004.243-2.122zm0-5.758a3 3 0 11-4.243-2.122 3 3 0 014.243 2.122z" /></svg>
+    </div>
+
+    <div>
+      <h2 style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; letter-spacing: 0.5px;">Coming Soon!</h2>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; max-width: 420px; margin: 0 auto;">
+        We are actively developing a high-fidelity client-side Audio Splitter. Soon you'll be able to slice tracks by duration intervals or equal segment counts 100% locally.
+      </p>
+    </div>
+
+    <!-- Progress animation -->
+    <div style="width: 100%; max-width: 320px; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; position: relative;">
+      <div style="position: absolute; left: 0; top: 0; height: 100%; width: 50%; background: var(--accent-gradient); border-radius: 2px; animation: slideProgress 2.2s infinite ease-in-out;"></div>
+    </div>
+    
+    <style>
+      @keyframes slideProgress {
+        0% { left: -50%; }
+        50% { left: 100%; }
+        100% { left: 100%; }
+      }
+    </style>
+
+    <div style="margin-top: 1rem;">
+      <a href="/" class="btn btn-secondary" style="padding: 0.65rem 1.75rem; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem;">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+        Back to Dashboard
+      </a>
+    </div>
+
+  </div>
+</div>

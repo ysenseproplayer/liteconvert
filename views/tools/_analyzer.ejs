@@ -1,0 +1,74 @@
+<!-- BPM Analyzer + Key Finder + Bitrate Checker unified analyzer template -->
+<%
+  const analyzerMeta = {
+    'bpm-analyzer': { title: 'BPM Analyzer', icon: 'M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3', mode: 'bpm' },
+    'key-finder': { title: 'Musical Key Finder', icon: 'M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z', mode: 'key' },
+    'bitrate-checker': { title: 'Bitrate Checker', icon: 'M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3', mode: 'bitrate' },
+  };
+  const am = analyzerMeta[tool.tool_key] || analyzerMeta['bpm-analyzer'];
+%>
+
+<div class="audio-workbench" data-tool-key="<%= tool.tool_key %>" data-tool-category="<%= tool.category %>" data-analyzer-mode="<%= am.mode %>">
+  <div class="tool-hero">
+    <div class="tool-hero-icon">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="<%= am.icon %>" /></svg>
+    </div>
+    <div class="tool-hero-text"><p class="tool-hero-desc"><%= tool.intro_paragraph || tool.page_description %></p></div>
+    <div class="tool-hero-badges">
+      <span class="hero-badge">100% Free</span>
+      <span class="hero-badge">Privacy Safe</span>
+      <span class="hero-badge">Browser-Side</span>
+    </div>
+  </div>
+
+  <div style="max-width: 620px; margin: 0 auto;">
+
+    <!-- Upload Card -->
+    <div id="az-upload-card" class="tool-panel" style="margin-bottom: 1.5rem;">
+      <div class="panel-label">Upload Audio File</div>
+      <div id="az-drop-zone" class="cv-dropzone" style="margin-top: 0.75rem;">
+        <input type="file" id="az-file-input" style="display:none;" accept="audio/*,.mp3,.wav,.flac,.ogg,.m4a">
+        <div class="cv-dropzone-icon">
+          <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+        </div>
+        <div class="cv-dropzone-text">
+          <strong>Drop your audio file here or click to browse</strong>
+          <span>MP3, WAV, FLAC, OGG, M4A supported</span>
+        </div>
+        <div class="cv-dropzone-btn">Choose Audio</div>
+      </div>
+    </div>
+
+    <!-- Analyzing Card -->
+    <div id="az-analyzing-card" class="tool-panel hidden" style="text-align: center; padding: 2.5rem; margin-bottom: 1.5rem;">
+      <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(0,242,254,0.08); border: 2px solid rgba(0,242,254,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; animation: spin 2s linear infinite;">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--accent-primary);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M4 4l4 4" /></svg>
+      </div>
+      <div id="az-status" style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">Analyzing audio...</div>
+      <div id="az-progress-wrap" style="width: 100%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; margin-top: 1rem; overflow: hidden;">
+        <div id="az-progress-bar" style="width: 20%; height: 100%; background: var(--accent-gradient); border-radius: 2px; transition: width 0.5s;"></div>
+      </div>
+    </div>
+
+    <!-- Results Card -->
+    <div id="az-results-card" class="tool-panel hidden" style="margin-bottom: 1.5rem;">
+      <div class="panel-label">Analysis Results</div>
+      <div id="az-results-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
+        <!-- Populated by JS -->
+      </div>
+      <button id="az-btn-analyze-another" class="ctrl-btn-mini" style="margin-top: 1.5rem; width: 100%; justify-content: center;">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89M4 4l4 4" /></svg>
+        <span>Analyze Another File</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+<style>
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.result-stat-card { background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.result-stat-card .stat-val { font-size: 2rem; font-weight: 800; color: var(--accent-primary); font-family: var(--font-heading); }
+.result-stat-card .stat-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem; }
+</style>
+
+

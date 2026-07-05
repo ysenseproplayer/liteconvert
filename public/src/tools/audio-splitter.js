@@ -1,2 +1,4 @@
-import { initAudioTool } from './_audio_controller.js';
-initAudioTool();
+// Audio Splitter - Coming Soon Placeholder JS
+(function init() {
+  console.log('Audio Splitter coming soon.');
+})();

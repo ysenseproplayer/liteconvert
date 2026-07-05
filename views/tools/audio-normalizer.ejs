@@ -1,1 +1,174 @@
-<%- include('_audio_layout') %>
+<!-- Dedicated Audio Normalizer Custom Workspace -->
+<div class="audio-workbench" data-tool-key="audio-normalizer" data-tool-category="editors">
+  <div class="tool-hero">
+    <div class="tool-hero-icon">
+      <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 00-2 2h-2a2 2 0 00-2-2z" /></svg>
+    </div>
+    <div class="tool-hero-text">
+      <p class="tool-hero-desc"><%= tool.seo_meta_desc %></p>
+    </div>
+    <div class="tool-hero-badges">
+      <span class="hero-badge">100% Free</span>
+      <span class="hero-badge">Privacy Safe</span>
+      <span class="hero-badge">Browser-Side</span>
+    </div>
+  </div>
+
+  <div style="max-width: 820px; margin: 0 auto;">
+
+    <!-- STEP 1: UPLOAD -->
+    <div class="cv-step" id="step-1-section">
+      <div class="cv-step-num"><span>1</span></div>
+      <div class="cv-step-body">
+        <h3 class="cv-step-title">Upload Audio File</h3>
+        
+        <div class="cv-dropzone" id="drop-zone">
+          <input type="file" id="audio-file-input" style="display:none;" accept="audio/*">
+          <div class="cv-dropzone-icon">
+            <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+          </div>
+          <div class="cv-dropzone-text">
+            <strong>Drop your audio file here or click to browse</strong>
+            <span>Supports MP3, WAV, M4A, FLAC, OGG, AAC, and more</span>
+          </div>
+          <div class="cv-dropzone-btn">Choose File</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: NORMALIZATION PANEL (hidden initially) -->
+    <div class="cv-step hidden" id="step-2-section">
+      <div class="cv-step-num"><span>2</span></div>
+      <div class="cv-step-body">
+        <h3 class="cv-step-title">Configure Normalization Settings</h3>
+
+        <!-- File Info Display Card -->
+        <div class="tool-panel" style="padding:1.25rem; margin-top:1rem; margin-bottom:1.5rem;">
+          <div style="font-weight:600; font-size:0.95rem; color:var(--text-primary); margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:0.5rem;">File Information</div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem 2rem; font-size:0.82rem;" class="split-pane">
+            <div><span style="color:var(--text-muted);">Name:</span> <strong id="info-name" style="color:var(--text-primary);">track.mp3</strong></div>
+            <div><span style="color:var(--text-muted);">Size:</span> <strong id="info-size" style="color:var(--accent-primary);">0.00 MB</strong></div>
+            <div><span style="color:var(--text-muted);">Duration:</span> <strong id="info-duration">00:00</strong></div>
+            <div><span style="color:var(--text-muted);">Channels:</span> <strong id="info-channels">Stereo</strong></div>
+            <div><span style="color:var(--text-muted);">Sample Rate:</span> <strong id="info-samplerate">44.1 kHz</strong></div>
+            <div><span style="color:var(--text-muted);">Bit Depth:</span> <strong id="info-bitdepth">16-bit PCM</strong></div>
+          </div>
+        </div>
+
+        <!-- Normalizer Columns Grid -->
+        <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:1.5rem; align-items:start;" class="split-pane">
+          
+          <!-- Left: Waveform preview player -->
+          <div class="tool-panel" style="padding:1.5rem;">
+            <div style="font-weight:600; font-size:0.9rem; color:var(--text-secondary); margin-bottom:1rem;">Original preview</div>
+            <div style="position:relative; height:120px; background:rgba(0,0,0,0.15); border-radius:6px; border:1px solid var(--card-border); overflow:hidden; margin-bottom:1rem;">
+              <canvas id="preview-canvas" height="120" style="width:100%; height:120px; display:block;"></canvas>
+              <div id="playhead-bar" style="position:absolute; top:0; bottom:0; left:0; width:2px; background:var(--accent-primary); box-shadow:0 0 6px var(--accent-primary); pointer-events:none;"></div>
+            </div>
+
+            <!-- Preview controls -->
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+              <div style="display:flex; gap:0.5rem;">
+                <button class="btn btn-secondary btn-mini" id="btn-play" style="min-width:60px;">Play</button>
+                <button class="btn btn-secondary btn-mini" id="btn-stop" style="min-width:60px;">Stop</button>
+              </div>
+              <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.8rem; color:var(--text-secondary);">
+                <button class="btn btn-secondary btn-mini" id="btn-zoom-out" style="padding:0.25rem 0.5rem;">-</button>
+                <span>Zoom <strong id="lbl-zoom">1x</strong></span>
+                <button class="btn btn-secondary btn-mini" id="btn-zoom-in" style="padding:0.25rem 0.5rem;">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Normalization options -->
+          <div class="tool-panel" style="padding:1.5rem;">
+            <div style="font-weight:600; font-size:0.9rem; color:var(--text-secondary); margin-bottom:1rem;">Normalization settings</div>
+            
+            <!-- LUFS target loudness slider -->
+            <div class="ctrl-group" style="margin-bottom:1rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                <span class="ctrl-label" style="margin:0;">Target loudness</span>
+                <strong style="font-family:var(--font-mono); color:var(--accent-primary);" id="lbl-lufs">-16 LUFS</strong>
+              </div>
+              <input type="range" id="target-lufs" class="styled-slider" min="-23" max="-10" step="1" value="-16" style="width:100%;">
+            </div>
+
+            <!-- Quick selection buttons -->
+            <div style="display:flex; gap:0.35rem; margin-bottom:1rem; flex-wrap:wrap;">
+              <button class="btn btn-secondary quick-lufs-btn" data-lufs="-23" style="font-size:0.72rem; padding:0.4rem; flex:1; min-width:55px;">-23 LUFS</button>
+              <button class="btn btn-secondary quick-lufs-btn" data-lufs="-18" style="font-size:0.72rem; padding:0.4rem; flex:1; min-width:55px;">-18 LUFS</button>
+              <button class="btn btn-primary quick-lufs-btn" data-lufs="-16" style="font-size:0.72rem; padding:0.4rem; flex:1; min-width:55px; background:var(--accent-gradient);">-16 LUFS</button>
+              <button class="btn btn-secondary quick-lufs-btn" data-lufs="-14" style="font-size:0.72rem; padding:0.4rem; flex:1; min-width:55px;">-14 LUFS</button>
+              <button class="btn btn-secondary quick-lufs-btn" data-lufs="-12" style="font-size:0.72rem; padding:0.4rem; flex:1; min-width:55px;">-12 LUFS</button>
+            </div>
+
+            <p style="font-size:0.76rem; color:var(--text-muted); line-height:1.4; margin-bottom:1.5rem;" id="lbl-lufs-desc">
+              Lower LUFS numbers are quieter. Try -16 LUFS for podcasts, -14 LUFS for music demos, or -23 LUFS for broadcast-style delivery.
+            </p>
+
+            <!-- Export format -->
+            <div class="ctrl-group" style="margin-bottom:1.25rem;">
+              <label class="ctrl-label">Export format</label>
+              <select id="export-format" class="styled-select">
+                <option value="wav">WAV</option>
+                <option value="mp3">MP3</option>
+              </select>
+            </div>
+
+            <!-- Summary box -->
+            <div style="background:rgba(0,0,0,0.15); border:1px solid var(--card-border); padding:0.75rem 1rem; border-radius:6px; font-size:0.8rem; color:var(--text-secondary); margin-bottom:1.5rem;">
+              <div style="font-weight:600; color:var(--text-primary); margin-bottom:0.2rem;">Normalization summary</div>
+              <span id="lbl-summary">The export will target about -16 LUFS with a -1.5 dBTP ceiling.</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Warning & process buttons -->
+        <div class="tool-panel" style="padding:1.25rem; margin-top:1.5rem; border:1px solid rgba(245,158,11,0.2); background:rgba(245,158,11,0.02); display:flex; flex-direction:column; gap:1rem;">
+          <div style="font-size:0.78rem; color:var(--warning); line-height:1.4; display:flex; gap:0.5rem; align-items:start;">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="flex-shrink:0; margin-top:1px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            <span>Normalization improves consistency, but it cannot repair clipped masters or extreme background noise already baked into the source.</span>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:1rem; border-top:1px solid rgba(255,255,255,0.05); padding-top:1rem;">
+            <button class="btn btn-secondary" id="btn-reset">Reset Options</button>
+            <button class="btn btn-primary" id="btn-normalize" style="background:var(--accent-gradient); min-width:180px;">Normalize audio</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STEP 3: PROGRESS -->
+    <div class="panel-progress hidden" id="processing-card" style="margin-top: 2rem;">
+      <div class="progress-status" id="processing-status">Analyzing audio levels...</div>
+      <div class="progress-track">
+        <div class="progress-bar" id="processing-progress-bar" style="width:10%;"></div>
+      </div>
+    </div>
+
+    <!-- STEP 4: SUCCESS DOWNLOAD -->
+    <div class="panel-download hidden" id="download-card" style="margin-top: 2rem; padding: 2rem;">
+      <div class="download-icon" style="background:rgba(16,185,129,0.1); color:var(--success); border-color:rgba(16,185,129,0.2);">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+      </div>
+      <div class="download-info" style="margin-bottom:1.5rem;">
+        <strong>Audio Normalized Successfully!</strong>
+        <span id="download-file-size" style="font-family:var(--font-mono); color:var(--success);">0.00 MB</span>
+      </div>
+
+      <!-- Preview master player -->
+      <audio id="master-preview-player" controls style="width:100%; margin-bottom:1.5rem;"></audio>
+
+      <div style="display:flex; gap:1rem; margin-top:1.5rem; width:100%; justify-content:center;">
+        <button class="btn btn-secondary" id="btn-normalize-another">Normalize Another</button>
+        <a href="" id="download-link" download class="btn btn-success" style="background:var(--success); color:white; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; font-weight:600; padding: 0.75rem 2rem;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          Download Normalized Audio
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
