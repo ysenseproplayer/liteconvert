@@ -103,7 +103,7 @@ async function connectDatabase() {
 // Global site URL and request path middleware
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
-  res.locals.siteUrl = process.env.SITE_URL || 'https://liteconvert.onrender.com';
+  res.locals.siteUrl = process.env.SITE_URL || 'https://tomp3.fun';
   next();
 });
 
@@ -192,7 +192,7 @@ app.get('/sitemap.xml', async (req, res) => {
   res.header('Content-Type', 'application/xml');
   try {
     const [tools] = await pool.query('SELECT tool_key FROM tools WHERE enabled = 1');
-    const baseUrl = process.env.SITE_URL || 'https://liteconvert.onrender.com';
+    const baseUrl = process.env.SITE_URL || 'https://tomp3.fun';
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
     xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
     // Home page
@@ -211,7 +211,7 @@ app.get('/sitemap.xml', async (req, res) => {
 // Robots.txt Route
 app.get('/robots.txt', (req, res) => {
   res.header('Content-Type', 'text/plain');
-  const baseUrl = process.env.SITE_URL || 'https://liteconvert.onrender.com';
+  const baseUrl = process.env.SITE_URL || 'https://tomp3.fun';
   res.send(`User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /admin\nDisallow: /api/\n\nSitemap: ${baseUrl}/sitemap.xml`);
 });
 
@@ -503,7 +503,7 @@ async function init() {
   }
   // Bind to 0.0.0.0 so Render can reach the server
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`LiteConvert server listening on port ${PORT}`);
+    console.log(`Tomp3 server listening on port ${PORT}`);
   });
 }
 
