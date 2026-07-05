@@ -254,6 +254,17 @@ app.post('/api/stats/increment', async (req, res) => {
   }
 });
 
+// Diagnostics API
+app.get('/api/diagnose-db', async (req, res) => {
+  try {
+    const [categories] = await pool.query('SELECT DISTINCT category FROM tools');
+    const [tools] = await pool.query('SELECT id, tool_key, name, category, enabled FROM tools');
+    res.json({ categories, tools });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ==========================================
 // ADMINISTRATIVE PORTAL ROUTES
 // ==========================================
