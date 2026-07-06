@@ -46,6 +46,82 @@ async function ensureAdmin() {
   }
 }
 
+function splitSqlQueries(sql) {
+  const queries = [];
+  let currentQuery = '';
+  let inString = false;
+  let stringChar = '';
+  
+  for (let i = 0; i < sql.length; i++) {
+    const char = sql[i];
+    const nextChar = sql[i + 1];
+    
+    if (!inString && char === '-' && nextChar === '-') {
+      while (i < sql.length && sql[i] !== '\n') {
+        i++;
+      }
+      continue;
+    }
+    
+    if ((char === "'" || char === '"' || char === '`') && (i === 0 || sql[i - 1] !== '\\')) {
+      if (inString && char === stringChar) {
+        inString = false;
+      } else if (!inString) {
+        inString = true;
+        stringChar = char;
+      }
+    }
+    
+    if (char === ';' && !inString) {
+      if (currentQuery.trim()) {
+        queries.push(currentQuery.trim());
+      }
+      currentQuery = '';
+    } else {
+      currentQuery += char;
+    }
+  }
+  
+  if (currentQuery.trim()) {
+    queries.push(currentQuery.trim());
+  }
+  
+  return queries;
+}
+
+async function seedDatabaseIfEmpty() {
+  let needsSeeding = false;
+  try {
+    const [rows] = await pool.query('SELECT COUNT(*) AS cnt FROM tools');
+    if (rows[0].cnt === 0) {
+      needsSeeding = true;
+    }
+  } catch (err) {
+    if (err.code === 'ER_NO_SUCH_TABLE' || err.message.includes("doesn't exist")) {
+      needsSeeding = true;
+    } else {
+      console.error('Error checking database status:', err);
+    }
+  }
+
+  if (needsSeeding) {
+    console.log('Database empty or tables missing. Running schema.sql...');
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const schemaSql = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
+      
+      const queries = splitSqlQueries(schemaSql);
+      for (const query of queries) {
+        await pool.query(query);
+      }
+      console.log('Database successfully seeded with schema.sql.');
+    } catch (err) {
+      console.error('Failed to seed database from schema.sql:', err);
+    }
+  }
+}
+
 // Establish database connection pool
 async function connectDatabase() {
   try {
@@ -67,6 +143,9 @@ async function connectDatabase() {
     dbConnected = true;
     dbError = null;
     console.log('Database connected successfully.');
+    
+    // Run migration/seeding if empty
+    await seedDatabaseIfEmpty();
     
     // Ensure all custom CMS fields exist in database
     const columnsToEnsure = [
