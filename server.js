@@ -51,6 +51,7 @@ async function connectDatabase() {
   try {
     pool = mysql.createPool({
       host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '4000'),
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_NAME || 'liteconvert',
@@ -101,9 +102,19 @@ async function connectDatabase() {
 
 
 // Global site URL and request path middleware
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.currentPath = req.path;
   res.locals.siteUrl = process.env.SITE_URL || 'https://tomp3.fun';
+  res.locals.allTools = [];
+  
+  if (dbConnected && pool) {
+    try {
+      const [rows] = await pool.query('SELECT tool_key, name, category, enabled FROM tools WHERE enabled = 1 ORDER BY name');
+      res.locals.allTools = rows;
+    } catch (err) {
+      console.warn('Failed to load navigation tools:', err.message);
+    }
+  }
   next();
 });
 

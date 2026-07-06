@@ -114,8 +114,8 @@
         </button>
         <div class="mega-menu-panel" style="width: 480px;">
           <% 
-            var popularConv = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'Popular Converters'; }) : [];
-            var nicheConv = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'Niche Converters'; }) : [];
+            var popularConv = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && (t.category === 'Audio Converters' || t.category === 'Audio Compressors'); }) : [];
+            var nicheConv = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'File Converters'; }) : [];
           %>
           <div class="mega-menu-column">
             <span class="mega-menu-title">Audio Converters</span>
@@ -146,8 +146,8 @@
         </button>
         <div class="mega-menu-panel" style="width: 480px;">
           <% 
-            var editors = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'Audio Editors'; }) : [];
-            var utilities = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'Audio Utilities'; }) : [];
+            var editors = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'Audio Editing'; }) : [];
+            var utilities = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'Utilities & Generators'; }) : [];
           %>
           <div class="mega-menu-column">
             <span class="mega-menu-title">Audio Editing</span>
@@ -178,8 +178,8 @@
         </button>
         <div class="mega-menu-panel" style="width: 480px;">
           <% 
-            var effects = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'Audio Effects'; }) : [];
-            var creative = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'Creative Audio'; }) : [];
+            var effects = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && t.category === 'AI & Vocals'; }) : [];
+            var creative = typeof allTools !== 'undefined' ? allTools.filter(function(t){ return t.enabled && (t.category === 'Aesthetic & FX' || t.category === 'Creative Audio'); }) : [];
           %>
           <div class="mega-menu-column">
             <span class="mega-menu-title">AI & Vocals</span>
